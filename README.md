@@ -99,9 +99,7 @@ The frontend interacts with the blockchain using MetaMask and the contract ABI.
 
 MetaMask is used in this prototype to demonstrate blockchain-based transparency, not as the final payment experience.
 
-📁 Project Structure
 campuschain/
-│
 ├── backend/
 │   ├── controllers/
 │   ├── db/
@@ -113,16 +111,25 @@ campuschain/
 │
 ├── frontend/
 │   ├── contractConfig.js
-│   ├── index.html / index.js
-│   ├── fundraiser.html / fundraiser.js
-│   ├── fundraiser-detail.html / fundraiser-detail.js
-│   ├── create-fundraiser.html / create-fundraiser.js
-│   ├── donor-dashboard.html / donor-dashboard.js
-│   ├── ngo-dashboard.html / ngo-dashboard.js
-│   ├── login.html / login.js
-│   └── signup.html / signup.js
+│   ├── index.html
+│   ├── index.js
+│   ├── fundraiser.html
+│   ├── fundraiser.js
+│   ├── fundraiser-detail.html
+│   ├── fundraiser-detail.js
+│   ├── create-fundraiser.html
+│   ├── create-fundraiser.js
+│   ├── donor-dashboard.html
+│   ├── donor-dashboard.js
+│   ├── ngo-dashboard.html
+│   ├── ngo-dashboard.js
+│   ├── login.html
+│   ├── login.js
+│   └── signup.html
 │
 └── contract.sol
+
+
 
 ⚙️ Tech Stack
 
