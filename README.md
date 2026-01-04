@@ -144,6 +144,7 @@ Scope: Full production readiness and UX optimizations are out of scope for Round
 Payments: MetaMask is used to clearly demonstrate on-chain transparency logic.
 
 🔮 Future Scope
+
  Hybrid Payments: Integration of UPI/Razorpay with on-chain verification.
 
  DAO Governance: Community voting for fund release.
