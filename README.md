@@ -144,13 +144,13 @@ Scope: Full production readiness and UX optimizations are out of scope for Round
 Payments: MetaMask is used to clearly demonstrate on-chain transparency logic.
 
 🔮 Future Scope
-[ ] Hybrid Payments: Integration of UPI/Razorpay with on-chain verification.
+ Hybrid Payments: Integration of UPI/Razorpay with on-chain verification.
 
-[ ] DAO Governance: Community voting for fund release.
+ DAO Governance: Community voting for fund release.
 
-[ ] Expense Verification: Dashboards for tracking utilization.
+ Expense Verification: Dashboards for tracking utilization.
 
-[ ] IPFS Storage: Decentralized document storage for receipts/proofs.
+ IPFS Storage: Decentralized document storage for receipts/proofs.
 
 🏁 Summary
 CampusChain demonstrates how Web3 can solve a real campus-level problem by replacing blind trust with verifiable transparency. By using blockchain as a public ledger, the platform ensures accountability by design — something traditional Web2 systems cannot guarantee.just tell where to end
