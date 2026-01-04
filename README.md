@@ -58,10 +58,12 @@ Trustless transparency – no central authority is required
 
 This makes Web3 essential, not optional, for this problem.
 
-🧠 Architecture Overview
+
+## 🧠 Architecture Overview
 
 CampusChain follows a hybrid architecture:
 
+```text
 Frontend (HTML/CSS/JS)
         |
         |  REST APIs
@@ -75,6 +77,7 @@ MySQL Database
         |  Verification
         v
 Blockchain (Ethereum via MetaMask)
+
 
 
 SQL Database: Stores fundraiser metadata (title, description, category, etc.) for fast UI rendering
@@ -99,6 +102,9 @@ The frontend interacts with the blockchain using MetaMask and the contract ABI.
 
 MetaMask is used in this prototype to demonstrate blockchain-based transparency, not as the final payment experience.
 
+## 📁 Project Structure
+
+```text
 campuschain/
 ├── backend/
 │   ├── controllers/
@@ -128,6 +134,7 @@ campuschain/
 │   └── signup.html
 │
 └── contract.sol
+
 
 
 
