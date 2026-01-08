@@ -27,8 +27,15 @@ async function loadMyFundraisers() {
 
   try {
     const res = await fetch(`${API_BASE}/api/my-fundraisers`, {
-      headers: { "Authorization": token }
+      headers: {
+        "Authorization": "Bearer " + token
+      }
     });
+
+    if (!res.ok) {
+      container.innerHTML = "<p>Failed to load campaigns.</p>";
+      return;
+    }
 
     const fundraisers = await res.json();
 
@@ -44,34 +51,35 @@ async function loadMyFundraisers() {
       const goal = f.goal;
       const percent = Math.min((raised / goal) * 100, 100);
 
-      const card = `
-        <div class="card">
+      container.innerHTML += `
+        <div class="fundraiser-card">
           <h3>${f.title}</h3>
           <p>${f.description.substring(0, 120)}...</p>
 
-          <p><strong>Category:</strong> ${f.category}</p>
-          <p><strong>People Affected:</strong> ${f.peopleAffected}</p>
-
-          <p><strong>Raised:</strong> ₹${raised} / ₹${goal}</p>
+          <div class="fundraiser-info">
+            <div class="info-item"><strong>Category</strong><span>${f.category}</span></div>
+            <div class="info-item"><strong>People</strong><span>${f.peopleAffected}</span></div>
+            <div class="info-item"><strong>Goal</strong><span>₹${goal}</span></div>
+          </div>
 
           <div class="progress-bar">
             <div class="progress-fill" style="width:${percent}%"></div>
           </div>
 
-          <button class="btn" onclick="window.location.href='fundraiser-detail.html?id=${f.fundraiserId}'">
+          <button class="btn btn-primary"
+            onclick="window.location.href='fundraiser-detail.html?id=${f.fundraiserId}'">
             View
           </button>
         </div>
       `;
-
-      container.innerHTML += card;
     });
 
   } catch (err) {
-    console.log(err);
+    console.error(err);
     container.innerHTML = "<p>Error loading fundraisers.</p>";
   }
 }
+
 
 // Connect MetaMask
 async function connectMetaMask() {
@@ -79,16 +87,22 @@ async function connectMetaMask() {
 
   if (!window.ethereum) {
     status.textContent = "MetaMask not installed!";
+    status.className = "disconnected";
     return;
   }
 
   try {
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts"
+    });
+
     const wallet = accounts[0];
     status.textContent = "Connected Wallet: " + wallet;
+    status.className = "connected";
 
     localStorage.setItem("wallet", wallet);
   } catch (err) {
-    status.textContent = "Failed to connect MetaMask.";
+    status.textContent = "MetaMask connection rejected.";
+    status.className = "disconnected";
   }
 }
