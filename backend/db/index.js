@@ -1,7 +1,10 @@
-import dotenv from "dotenv";
 import mysql from "mysql2";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -10,8 +13,8 @@ const db = mysql.createConnection({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   ssl: {
-    rejectUnauthorized: true
-  }
+    ca: fs.readFileSync(path.join(__dirname, "../certs/tidb-ca.pem")),
+  },
 });
 
 export default db;
