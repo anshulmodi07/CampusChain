@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Campaign | CampusChain</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+
+    /* Navbar */
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    nav .logo {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    nav .logo::before {
+      content: "🔗";
+      font-size: 28px;
+      -webkit-text-fill-color: initial;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #475569;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #667eea;
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .container h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .container h2::before {
+      content: "✨";
+      font-size: 36px;
+    }
+
+    .container>p {
+      color: #64748b;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    /* Messages */
+    .msg {
+      display: none;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+      margin: 20px 0;
+      animation: slideIn 0.3s ease;
+    }
+
+    .msg.show {
+      display: block;
+    }
+
+    .msg.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 2px solid #86efac;
+    }
+
+    .msg.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 2px solid #fca5a5;
+    }
+
+    .msg.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 2px solid #93c5fd;
+    }
+
+    /* Form */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      color: #475569;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      background: white;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    button {
+      padding: 16px 24px;
+      margin-top: 8px;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      width: 100%;
+    }
+
+    #connectWalletBtn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    #connectWalletBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    #submitBtn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    #submitBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    #bcMsg {
+      margin-top: 15px;
+      padding: 12px;
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 600;
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+    }
+
+    #bcMsg.show {
+      display: block;
+    }
+
+    /* Form Groups */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 12px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav ul {
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .container {
+        margin: 20px;
+        padding: 30px 24px;
+      }
+
+      .container h2 {
+        font-size: 26px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="logo" onclick="window.location.href='index.html'">CampusChain</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ngo-dashboard.html">Dashboard</a></li>
+      <li><a href="fundraiser.html">View Campaigns</a></li>
+      <li><a id="logoutBtn" href="#">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+
+    <h2>Launch New Campaign</h2>
+    <p>Create a blockchain-backed transparent fundraising campaign for your student organization</p>
+
+    <div id="msg" class="msg"></div>
+
+    <form id="fundraiserForm">
+
+      <div class="form-group">
+        <label for="title">Campaign Title *</label>
+        <input type="text" id="title" placeholder="Enter campaign title (e.g., Annual Tech Fest 2025)" required />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Campaign Description *</label>
+        <textarea id="description"
+          placeholder="Describe your initiative, goals, and how funds will be utilized by your organization"
+          required></textarea>
+      </div>
+
+      <label for="goal">Funding Goal (ETH) *</label>
+      <input type="number" id="goal" placeholder="e.g., 0.5" step="0.0001" min="0.0001" required />
+
+
+      <div class="form-group">
+        <label for="people">Students Impacted *</label>
+        <input type="number" id="people" placeholder="e.g., 200" min="1" required />
+      </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="category">Category *</label>
+      <input type="text" id="category" placeholder="e.g., Event, Social Cause, Club Activity" required />
+    </div>
+
+    <div class="form-group">
+      <label for="type">Campaign Visibility *</label>
+      <select id="type">
+        <option value="public">Public (Campus-wide)</option>
+        <option value="private">Private (Specific Groups)</option>
+      </select>
+    </div>
+  </div>
+
+  <button type="button" id="connectWalletBtn">🦊 Connect MetaMask</button>
+  <button type="submit" id="submitBtn">🚀 Launch Campaign</button>
+
+  <p id="bcMsg"></p>
+
+  </form>
+  </div>
+
+  <!-- Load Web3 + ABI + JS -->
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+  <script src="contractConfig.js"></script>
+  <script src="create-fundraiser.js"></script>
+  <script>
+    // Logout functionality
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      window.localStorage.removeItem("token");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+
+</html>

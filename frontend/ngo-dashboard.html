@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Org Dashboard | CampusChain</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+
+    /* Navbar */
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    nav .logo {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    nav .logo::before {
+      content: "🔗";
+      font-size: 28px;
+      -webkit-text-fill-color: initial;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    nav ul li a,
+    nav ul li button {
+      text-decoration: none;
+      color: #475569;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+
+    nav ul li a:hover,
+    nav ul li button:hover {
+      color: #667eea;
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .dashboard-header {
+      margin-bottom: 30px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dashboard-header h1::before {
+      content: "📊";
+      font-size: 36px;
+    }
+
+    .dashboard-header p {
+      color: #64748b;
+      font-size: 16px;
+    }
+
+    /* Button Bar */
+    .btn-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      padding: 14px 20px;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-wallet {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-wallet:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* Wallet Status */
+    #walletStatus {
+      padding: 14px 20px;
+      background: #f8fafc;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 30px;
+      border: 2px solid #e2e8f0;
+      display: none;
+    }
+
+    #walletStatus.connected {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    #walletStatus.disconnected {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+
+    /* Fundraisers Section */
+    #fundraisersList {
+      display: grid;
+      gap: 20px;
+    }
+
+    .fundraiser-card {
+      background: #f8fafc;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border-left: 4px solid #667eea;
+      animation: slideIn 0.4s ease;
+    }
+
+    .fundraiser-card:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .fundraiser-card h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+
+    .fundraiser-card p {
+      color: #64748b;
+      line-height: 1.6;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .fundraiser-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-item strong {
+      color: #475569;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-item span {
+      color: #1e293b;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      margin: 15px 0;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-fill {
+      height: 12px;
+      background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+      border-radius: 8px;
+      transition: width 0.8s ease;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    }
+
+    .fundraiser-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .fundraiser-actions button {
+      flex: 1;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+
+    .empty-state::before {
+      content: "📋";
+      font-size: 64px;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+      font-size: 22px;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      color: #64748b;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 12px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav ul {
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .container {
+        margin: 20px;
+        padding: 30px 24px;
+      }
+
+      .dashboard-header h1 {
+        font-size: 26px;
+      }
+
+      .btn-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .fundraiser-info {
+        grid-template-columns: 1fr;
+      }
+
+      .fundraiser-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="logo" onclick="window.location.href='index.html'">CampusChain</div>
+    <ul>
+      <li><a id="logoutBtn" href="#">Logout</a></li>
+      <li><button onclick="window.location.href='edit-profile.html'">Edit Profile</button></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    
+    <div class="dashboard-header">
+      <h1>Student Organization Dashboard</h1>
+      <p>Manage your campus campaigns and track contributions</p>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-bar">
+      <button class="btn btn-primary" onclick="window.location.href='create-fundraiser.html'">
+        ➕ Create Campaign
+      </button>
+
+      <button class="btn btn-secondary" onclick="loadMyFundraisers()">
+        📂 My Campaigns
+      </button>
+
+      <button class="btn btn-wallet" onclick="connectMetaMask()">
+        🦊 Connect MetaMask
+      </button>
+    </div>
+
+    <div id="walletStatus"></div>
+
+    <!-- FUNDRAISERS LIST -->
+    <div id="fundraisersList">
+      <div class="empty-state">
+        <h3>No Campaigns Yet</h3>
+        <p>Click "My Campaigns" to load your fundraisers or create a new one!</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="ngo-dashboard.js"></script>
+  <script>
+    // Logout functionality
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      window.localStorage.removeItem("token");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+
+</html>
