@@ -17,7 +17,7 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
     address: document.getElementById("address").value
   };
 
-  await fetch(`{API_BASE}/api/profile/update`, {
+  await fetch(`${API_BASE}/api/profile/update`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
