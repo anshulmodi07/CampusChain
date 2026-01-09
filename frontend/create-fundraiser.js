@@ -59,12 +59,12 @@ async function createFundraiser() {
   const bcMsg = document.getElementById("bcMsg");
   const submitBtn = document.getElementById("submitBtn");
 
-  const title = titleInput.value.trim();
-  const description = descriptionInput.value.trim();
-  const goal = goalInput.value.trim();
-  const category = categoryInput.value.trim();
-  const people = peopleInput.value.trim();
-  const type = typeSelect.value;
+const title = document.getElementById("title").value.trim();
+const description = document.getElementById("description").value.trim();
+const goal = document.getElementById("goal").value.trim();
+const category = document.getElementById("category").value.trim();
+const people = document.getElementById("people").value.trim();
+const type = document.getElementById("type").value;
 
   const token = localStorage.getItem("token");
 
@@ -140,3 +140,4 @@ function showMessage(text, type) {
   msg.innerText = text;
   msg.className = `msg show ${type}`;
 }
+
