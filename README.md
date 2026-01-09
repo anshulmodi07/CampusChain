@@ -158,7 +158,7 @@ npm install
 npm start
 ```
 
-⚠️ Hackathon Note (Pro Round 2)
+## ⚠️ Hackathon Note (Pro Round 2)
 
 This project represents the **final deployed MVP** developed for **Web3 Odyssey – Pro Round 2**.
 
@@ -168,8 +168,18 @@ This project represents the **final deployed MVP** developed for **Web3 Odyssey 
 - **Codebase:** Complete and documented codebase updated in the original Round 1 GitHub repository  
 > **Design Clarification:** MetaMask is used strictly as a transaction-signing interface to demonstrate on-chain transparency; the core value lies in the immutable public ledger, not payments.
 
+## 🚀 Running Locally (Optional)
 
-🔮 Future Scope
+> **Note:** The project is already deployed. Local setup is only required if you want to run it locally.
+
+### Backend
+```bash
+cd backend
+npm install
+npm start
+```
+
+## 🔮 Future Scope
 
  Hybrid Payments: Integration of UPI/Razorpay with on-chain verification.
 
