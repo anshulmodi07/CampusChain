@@ -72,9 +72,9 @@ For this specific problem, Web3 is **essential**, not optional.
 CampusChain follows a hybrid Web2 + Web3 architecture to balance fast user experience with trustless transparency.
 ```mermaid
 graph TD
-    A[Frontend<br/>HTML/CSS/JS<br/>(Netlify)] -->|HTTPS REST APIs| B[Backend<br/>Node.js / Express<br/>(Render)]
-    B -->|Metadata Indexing| C[MySQL Database<br/>(TiDB Cloud)]
-    A -->|On-chain Verification| D[Blockchain<br/>Ethereum Sepolia]
+    A["Frontend (HTML/CSS/JS) - Netlify"] -->|HTTPS REST APIs| B["Backend (Node.js / Express) - Render"]
+    B -->|Metadata Indexing| C["MySQL Database - TiDB Cloud"]
+    A -->|On-chain Verification| D["Blockchain - Ethereum Sepolia"]
     D -.->|Immutable Ledger| A
 ```
 ### Architecture Components
