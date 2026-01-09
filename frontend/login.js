@@ -21,12 +21,17 @@ async function loginUser() {
     return;
   }
 
-  try {
-    const res = await fetch(`${API_BASE}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+try {
+
+  msg.textContent = "Initializing server, please wait...";
+  msg.style.color = "#555";
+
+  const res = await fetch(`${API_BASE}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
 
     const data = await res.json();
 
@@ -52,3 +57,4 @@ async function loginUser() {
     msg.textContent = "Server error";
   }
 }
+
