@@ -1,6 +1,5 @@
 const API_BASE = "https://campuschain-bqul.onrender.com";
 
-
 async function signupUser() {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
@@ -8,6 +7,9 @@ async function signupUser() {
   const role = document.getElementById("role").value.trim();
   const wallet = document.getElementById("wallet").value.trim();
   const msg = document.getElementById("msg");
+
+  msg.style.color = "red";
+  msg.textContent = "";
 
   if (!name || !email || !password || !role) {
     msg.textContent = "All required fields must be filled.";
@@ -27,23 +29,30 @@ async function signupUser() {
       }),
     });
 
-    const data = await res.json();
+    let data = {};
+    try {
+      data = await res.json();
+    } catch {
+      data = {};
+    }
 
     if (!res.ok) {
-      msg.textContent = data.error || "Signup failed";
+      msg.textContent =
+        data.error ||
+        "User already exists. Please login instead.";
       return;
     }
 
-    // Signup success
+    // ✅ Signup success
     msg.style.color = "green";
-    msg.textContent = "Signup successful! Redirecting...";
-    
+    msg.textContent = "Signup successful! Redirecting to login...";
+
     setTimeout(() => {
       window.location.href = "login.html";
     }, 1500);
 
   } catch (error) {
-    console.log(error);
-    msg.textContent = "Server error";
+    console.error(error);
+    msg.textContent = "Unable to reach server. Please try again.";
   }
 }
