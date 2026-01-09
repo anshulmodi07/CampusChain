@@ -16,18 +16,23 @@ async function signupUser() {
     return;
   }
 
-  try {
-    const res = await fetch(`${API_BASE}/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        role,
-        wallet_address: wallet || null
-      }),
-    });
+try {
+  // 👇 ADD HERE (before fetch)
+  msg.textContent = "Initializing server, please wait...";
+  msg.style.color = "#555";
+
+  const res = await fetch(`${API_BASE}/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      email,
+      password,
+      role,
+      wallet_address: wallet || null
+    }),
+  });
+;
 
     let data = {};
     try {
@@ -56,3 +61,4 @@ async function signupUser() {
     msg.textContent = "Unable to reach server. Please try again.";
   }
 }
+
