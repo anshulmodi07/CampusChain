@@ -115,6 +115,13 @@ Note: MetaMask is used in this prototype to demonstrate blockchain-based transpa
 
 **Wallet:** MetaMask (transaction signing & user authentication)
 
+## 🔐 Security & Access Control
+
+- JWT-based authentication for all protected backend routes  
+- Role-based access control (NGO vs Donor) enforced at API level  
+- Smart contract state is immutable and publicly verifiable on-chain
+
+
 ## 📁 Project Structure
 
 ```text
