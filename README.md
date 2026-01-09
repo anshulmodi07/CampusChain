@@ -147,7 +147,7 @@ campuschain/
 ```                  
 
 
-## 🚀 Running Locally (Optional)
+## 🚀 Running Locally
 
 ### Backend
 ```bash
