@@ -52,6 +52,8 @@ const __dirname = path.dirname(__filename);
 // Contains routes like /login, /api/donate, etc.
 // Express attaches them to the app
 
+// Quick check if DB is alive
+
 app.get("/test-db", (req, res) => {
   db.query("SELECT 1", (err) => {
     if (err) {
@@ -61,9 +63,14 @@ app.get("/test-db", (req, res) => {
     res.send("DB OK");
   });
 });
+
+//Confirms backend is reachable
+
 app.get("/", (req, res) => {
   res.status(200).send("CampusChain Backend is running");
 });
+
+// Used to wake Render backend from cold start
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", service: "CampusChain Backend" });
@@ -77,6 +84,7 @@ app.use(donationRoutes);
 app.use(commentRoutes);
 app.use(errorMiddleware);
 export default app;
+
 
 
 
