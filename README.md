@@ -2,15 +2,15 @@
 
 **CampusChain** is a Web3-based crowdfunding platform designed for college campuses to bring **transparency** and **trust** into student-led fundraising. It uses blockchain as a public, immutable ledger so that fundraising data can be independently verified without relying on blind trust in organizers.
 
----
-## 🌐 Live Deployment ⚠️ Note: The backend is deployed on a free-tier service and may take a few seconds to respond on the first request due to cold start. Subsequent requests are instant.
+## 🌐 Live Deployment
+
+⚠️ **Note:** The backend is deployed on a free-tier service and may take a few seconds to respond on the first request due to cold start. Subsequent requests are instant.
+
 - **Frontend (Netlify):** https://campuschain07.netlify.app  
 - **Backend API (Render):** https://campuschain-bqul.onrender.com  
 - **Blockchain:** Ethereum Sepolia Testnet  
 - **Smart Contract (Etherscan):**  
   https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc
-
----
 
 ## 🔐 Demo Login Credentials
 
