@@ -81,39 +81,36 @@ graph TD
 ```
 ### Architecture Components
 
-- **Frontend (Netlify)**: Static HTML/CSS/JS deployed on Netlify; fetches metadata from the backend and verifies fundraising data directly from the blockchain.  
-- **Backend (Render)**: Node.js + Express APIs deployed on Render; handles authentication and business logic.  
-- **Database (MySQL / TiDB Cloud)**: Stores fundraiser metadata (title, description, category, impact) for fast UI rendering.  
-- **Blockchain (Ethereum Sepolia)**: Acts as the immutable ledger of truth for fundraiser creation and donations.  
+- **Frontend (Netlify):** Static HTML/CSS/JS deployed on Netlify; consumes backend APIs and verifies fundraising data directly from the blockchain.  
+- **Backend (Render):** Node.js + Express REST APIs deployed on Render; handles authentication, authorization, and application logic.  
+- **Database (MySQL / TiDB Cloud):** Stores non-financial fundraiser metadata (title, description, category, impact) for fast UI rendering.  
+- **Blockchain (Ethereum Sepolia):** Serves as the immutable ledger of truth for fundraiser creation and donation records.  
 
+---
 
-🔗 Smart Contract
-The smart contract is the core Web3 component handling:
+### 🔗 Smart Contract
 
-✅ Fundraiser creation
-💰 On-chain donations (payable)
+The smart contract forms the core Web3 layer and is responsible for:
 
-🔄 Fundraiser lifecycle (active, completed, deleted)
+- ✅ Fundraiser creation and on-chain state management  
+- 💰 Recording donations immutably on the blockchain  
+- 🔄 Managing fundraiser lifecycle (active, completed)  
+- ⚓ Anchoring expense reports via hash references (future-ready)  
 
-⚓ Expense report anchoring (via hash references)
+> **Note:** MetaMask is used strictly as a transaction-signing interface to demonstrate blockchain-based transparency.
 
-Note: MetaMask is used in this prototype to demonstrate blockchain-based transparency.
+---
 
-⚙️ Tech Stack
+### ⚙️ Tech Stack
 
-**Frontend:** HTML, CSS, JavaScript (deployed on Netlify)  
+- **Frontend:** HTML, CSS, JavaScript (deployed on Netlify)  
+- **Backend:** Node.js, Express.js (deployed on Render, JWT-based authentication)  
+- **Database:** MySQL (TiDB Cloud)  
+- **Blockchain:** Ethereum (Sepolia Testnet)  
+- **Web3 Library:** ethers.js  
+- **Smart Contracts:** Solidity  
+- **Wallet:** MetaMask (transaction signing and user authorization)
 
-**Backend:** Node.js, Express.js (deployed on Render, JWT-based auth)  
-
-**Database:** MySQL (TiDB Cloud)  
-
-**Blockchain:** Ethereum (Sepolia Testnet)  
-
-**Web3 Library:** ethers.js  
-
-**Smart Contracts:** Solidity  
-
-**Wallet:** MetaMask (transaction signing & user authentication)
 
 ## 🔐 Security & Access Control
 
