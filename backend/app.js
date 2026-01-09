@@ -61,9 +61,10 @@ app.get("/test-db", (req, res) => {
     res.send("DB OK");
   });
 });
-app.get("/", (req, res) => {
-  res.status(200).send("CampusChain Backend is running");
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", service: "CampusChain Backend" });
 });
+
 
 app.use(profileRoutes);
 app.use(authRoutes);
@@ -72,4 +73,5 @@ app.use(donationRoutes);
 app.use(commentRoutes);
 app.use(errorMiddleware);
 export default app;
+
 
