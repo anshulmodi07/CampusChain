@@ -4,13 +4,16 @@
 
 ## 🌐 Live Deployment
 
-⚠️ **Note:** The backend is deployed on a free-tier service and may take a few seconds to respond on the first request due to cold start. Subsequent requests are instant.
+⚠️ **Note:** The backend is deployed on a free-tier service and may take a few seconds to respond on the first request due to cold start. Subsequent requests are instant.  
+ℹ️ If the backend appears unresponsive on first load, visiting the health check endpoint once will initialize the server:  
+https://campuschain-bqul.onrender.com/health
 
 - **Frontend (Netlify):** https://campuschain07.netlify.app  
 - **Backend API (Render):** https://campuschain-bqul.onrender.com  
 - **Blockchain:** Ethereum Sepolia Testnet  
 - **Smart Contract (Etherscan):**  
   https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc
+
 
 ## 🔐 Demo Login Credentials
 
