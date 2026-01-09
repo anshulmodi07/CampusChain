@@ -3,6 +3,25 @@
 **CampusChain** is a Web3-based crowdfunding platform designed for college campuses to bring **transparency** and **trust** into student-led fundraising. It uses blockchain as a public, immutable ledger so that fundraising data can be independently verified without relying on blind trust in organizers.
 
 ---
+## 🌐 Live Deployment
+
+- **Frontend (Netlify):** https://campuschain07.netlify.app  
+- **Backend API (Render):** https://campuschain-bqul.onrender.com  
+- **Blockchain:** Ethereum Sepolia Testnet  
+
+---
+
+## 🔐 Demo Login Credentials
+
+**NGO**
+- Email: `ngo@gmail.com`
+- Password: `123`
+
+**Donor**
+- Email: `donor@gmail.com`
+- Password: `123`
+
+---
 
 ## 🚩 Problem Statement
 
@@ -50,27 +69,26 @@ For this specific problem, Web3 is **essential**, not optional.
 
 ## 🧠 Architecture Overview
 
-CampusChain follows a hybrid architecture to balance user experience and blockchain security.
-
+CampusChain follows a hybrid Web2 + Web3 architecture to balance fast user experience with trustless transparency.
 ```mermaid
 graph TD
-    A[Frontend HTML/CSS/JS] -->|REST APIs| B[Backend Node.js/Express]
-    A -->|Verification| D[Blockchain Ethereum/MetaMask]
-    B -->|Metadata Indexing| C[MySQL Database]
+    A[Frontend<br/>HTML/CSS/JS<br/>(Netlify)] -->|HTTPS REST APIs| B[Backend<br/>Node.js / Express<br/>(Render)]
+    B -->|Metadata Indexing| C[MySQL Database<br/>(TiDB Cloud)]
+    A -->|On-chain Verification| D[Blockchain<br/>Ethereum Sepolia]
     D -.->|Immutable Ledger| A
 ```
 ### Architecture Components
 
-- **MySQL**: Stores fundraiser metadata (title, description, category) for fast UI rendering  
-- **Blockchain**: Acts as the immutable ledger for donations and fundraiser state  
-- **Frontend**: Fetches metadata from the backend and verifies financial data directly from the blockchain  
+- **Frontend (Netlify)**: Static HTML/CSS/JS deployed on Netlify; fetches metadata from the backend and verifies fundraising data directly from the blockchain.  
+- **Backend (Render)**: Node.js + Express APIs deployed on Render; handles authentication and business logic.  
+- **Database (MySQL / TiDB Cloud)**: Stores fundraiser metadata (title, description, category, impact) for fast UI rendering.  
+- **Blockchain (Ethereum Sepolia)**: Acts as the immutable ledger of truth for fundraiser creation and donations.  
 
 
 🔗 Smart Contract
 The smart contract is the core Web3 component handling:
 
 ✅ Fundraiser creation
-
 💰 On-chain donations (payable)
 
 🔄 Fundraiser lifecycle (active, completed, deleted)
@@ -80,17 +98,20 @@ The smart contract is the core Web3 component handling:
 Note: MetaMask is used in this prototype to demonstrate blockchain-based transparency.
 
 ⚙️ Tech Stack
-Frontend: HTML, CSS, JavaScript
 
-Backend: Node.js, Express.js
+**Frontend:** HTML, CSS, JavaScript (deployed on Netlify)  
 
-Database: MySQL
+**Backend:** Node.js, Express.js (deployed on Render, JWT-based auth)  
 
-Blockchain: Ethereum (via MetaMask)
+**Database:** MySQL (TiDB Cloud)  
 
-Web3 Library: ethers.js
+**Blockchain:** Ethereum (Sepolia Testnet)  
 
-Smart Contracts: Solidity
+**Web3 Library:** ethers.js  
+
+**Smart Contracts:** Solidity  
+
+**Wallet:** MetaMask (transaction signing & user authentication)
 
 ## 📁 Project Structure
 
@@ -104,6 +125,7 @@ campuschain/
 │   ├── utils/
 │   ├── app.js
 │   └── server.js
+|   └── certs
 │
 ├── frontend/
 │   ├── contractConfig.js
@@ -117,31 +139,27 @@ campuschain/
 │
 └── contract.sol
 ```                  
-🚀 Running the Project Locally
-1. Backend Setup
-Navigate to the backend directory and install dependencies:
 
-```md
+
+## 🚀 Running Locally (Optional)
+
+### Backend
+```bash
 cd backend
 npm install
 npm start
 ```
 
-2. Frontend Setup
-Open frontend/index.html in your browser (or use Live Server).
+⚠️ Hackathon Note (Pro Round 2)
 
-Ensure MetaMask is installed in your browser.
+This project represents the **final deployed MVP** developed for **Web3 Odyssey – Pro Round 2**.
 
-Connect MetaMask to the correct network (Localhost or Testnet).
+- **Timeline:** January 10  
+- **Demo:** Live, end-to-end user interaction showcased on **Ethereum Sepolia Testnet**  
+- **Deployment:** Fully deployed frontend and backend with on-chain verification  
+- **Codebase:** Complete and documented codebase updated in the original Round 1 GitHub repository  
+> **Design Clarification:** MetaMask is used strictly as a transaction-signing interface to demonstrate on-chain transparency; the core value lies in the immutable public ledger, not payments.
 
-⚠️ Hackathon Note
-This repository represents an initial proof-of-concept developed during the Web3 Odyssey Hackathon (Round 1).
-
-Focus: Core idea, architecture, and smart contract design.
-
-Scope: Full production readiness and UX optimizations are out of scope for Round 1.
-
-Payments: MetaMask is used to clearly demonstrate on-chain transparency logic.
 
 🔮 Future Scope
 
