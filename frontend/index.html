@@ -502,5 +502,11 @@
   </footer>
 
   <script src="index.js"></script>
+ <script>
+  // Wake up backend (Render cold start)
+  fetch("https://campuschain-bqul.onrender.com/health")
+    .catch(() => {});
+</script>
 </body>
+
 </html>
