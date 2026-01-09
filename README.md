@@ -171,5 +171,6 @@ This project represents the **final deployed MVP** developed for **Web3 Odyssey 
 
  IPFS Storage: Decentralized document storage for receipts/proofs.
 
-🏁 Summary
+## 🏁 Summary
+
 CampusChain demonstrates how Web3 can solve a real campus-level problem by replacing blind trust with verifiable transparency. By using blockchain as a public ledger, the platform ensures accountability by design — something traditional Web2 systems cannot guarantee.just tell where to end
