@@ -1,8 +1,8 @@
 // verifyToken → “Is the user logged in?”
 // requireRole → “Is the user allowed?”
 
-import jwt from "jsonwebtoken";
-import ExpressError from "../utils/ExpressError.js";
+import jwt from "jsonwebtoken";//Tool to check token
+import ExpressError from "../utils/ExpressError.js";//Tool to send proper error messages like 401, 403
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
@@ -47,3 +47,4 @@ export function requireRole(role) {
     next();
   };
 }
+
