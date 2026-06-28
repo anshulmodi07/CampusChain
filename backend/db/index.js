@@ -5,6 +5,12 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+import dotenv from "dotenv";
+dotenv.config();
+
+console.log("DB_USER =", process.env.DB_USER);
+console.log("DB_HOST =", process.env.DB_HOST);
+console.log("DB_PASS =", process.env.DB_PASS ? "EXISTS" : "MISSING");
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -13,7 +19,7 @@ const db = mysql.createConnection({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   ssl: {
-    ca: fs.readFileSync(path.join(__dirname, "../certs/tidb-ca.pem")),
+    rejectUnauthorized: false,
   },
 });
 
