@@ -26,11 +26,15 @@
   import paymentRoutes from "./routes/payment.routes.js";
   import commentRoutes from "./routes/comment.routes.js";
   import profileRoutes from "./routes/profile.routes.js";
+  import donationVerificationRoutes from "./routes/donationVerification.routes.js";
+
 
 
 
   // create app FIRST
+
   const app = express();
+
 
   // global middleware
   app.use(cors());
@@ -86,8 +90,10 @@
   app.use(fundraiserRoutes);
   app.use(donationRoutes);
   app.use(paymentRoutes);
+  app.use(donationVerificationRoutes);
   app.use(commentRoutes);
   app.use(errorMiddleware);
+
 
   export default app;
 

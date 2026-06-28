@@ -25,7 +25,7 @@ const getEnv = () => {
 };
 
 const getDonationProofRegistryAbi = () => {
-  // WHY: Keep ABI local and minimal; backend only calls anchorDonation(bytes32).
+  // WHY: Minimal ABI used for proof verification + anchoring.
   return [
     {
       inputs: [{ internalType: "bytes32", name: "donationHash", type: "bytes32" }],
@@ -34,8 +34,16 @@ const getDonationProofRegistryAbi = () => {
       stateMutability: "nonpayable",
       type: "function",
     },
+    {
+      inputs: [{ internalType: "bytes32", name: "donationHash", type: "bytes32" }],
+      name: "verifyDonation",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      stateMutability: "view",
+      type: "function",
+    },
   ];
 };
+
 
 const init = () => {
   if (cached) return cached;
@@ -128,8 +136,22 @@ export const generateDonationHash = ({
   return ethers.keccak256(encoded);
 };
 
+export const verifyDonation = async (donationHash) => {
+  const { contract } = init();
+
+  // WHY: Verify only needs a view call; no signer or tx needed.
+  if (!donationHash || donationHash === ethers.ZeroHash) {
+    throw new ExpressError(400, "donationHash must be non-zero bytes32");
+  }
+
+  const verified = await contract.verifyDonation(donationHash);
+  return verified;
+};
+
+
 export const anchorDonation = async (donationHash) => {
   const { contract } = init();
+
 
   // WHY: Call the only on-chain function that anchors the immutable donation hash.
   if (!donationHash || donationHash === ethers.ZeroHash) {
