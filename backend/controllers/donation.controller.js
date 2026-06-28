@@ -1,7 +1,7 @@
 import db from "../db/index.js";
 import ExpressError from "../utils/ExpressError.js";
 import { recordDonation } from "../services/donation.service.js";
-
+import { anchorDonation, generateDonationHash } from "../services/blockchain.service.js";
 
 // -------- DONATE --------
 export const donate = async (req, res) => {
@@ -16,28 +16,49 @@ export const donate = async (req, res) => {
     throw new ExpressError(400, "Invalid donation data");
   }
 
+  // WHY: Orchestrate DB insert first, then attempt anchoring.
+  // If anchoring fails, keep SQL record and return success (per requirements).
   try {
-    // WHY: DB insertion is delegated to a reusable service.
-    // Keep behavior IDENTICAL: tx_hash falls back to Date.now().
-    const donationId = await recordDonation({
+    const { donationId, donatedAt } = await recordDonation({
       fundraiser_id,
       donor_address: donorWallet,
       amount,
       tx_hash,
-      payment_method: null,
-      payment_reference: null,
+      payment_method: "crypto",
+      payment_reference: "",
     });
+
+    const donationHash = generateDonationHash({
+      donationId,
+      fundraiser_id,
+      donor_address: donorWallet,
+      amount,
+      payment_method: "crypto",
+      payment_reference: "",
+      donatedAt,
+    });
+
+    try {
+      const { anchorTxHash } = await anchorDonation(donationHash);
+
+      // WHY: Persist anchor_tx_hash after anchoring succeeds.
+      await db.promise().query(
+        "UPDATE donations SET anchor_tx_hash = ? WHERE donation_id = ?",
+        [anchorTxHash, donationId]
+      );
+    } catch (bcErr) {
+      // WHY: Anchoring failure must not rollback SQL donation.
+      console.error("Blockchain anchoring failed (MetaMask):", bcErr);
+    }
 
     res.json({
       message: "Donation successful",
       donationId,
     });
-
   } catch (err) {
     throw new ExpressError(500, "Database error during donation");
   }
 };
-
 
 // -------- MY DONATIONS --------
 export const myDonations = async (req, res) => {
@@ -48,8 +69,9 @@ export const myDonations = async (req, res) => {
     );
 
     res.json(rows);
-
   } catch (err) {
     throw new ExpressError(500, "Database error fetching donations");
   }
 };
+
+

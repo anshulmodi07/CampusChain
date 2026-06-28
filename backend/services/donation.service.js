@@ -33,7 +33,12 @@ export const recordDonation = async ({
     payment_reference,
   ]);
 
-  return result.insertId;
+  // WHY: Return donatedAt so controllers can deterministically compute the anchored hash
+  // without querying immediately after INSERT.
+  const donatedAt = new Date();
+
+  return { donationId: result.insertId, donatedAt };
 };
+
 
 
