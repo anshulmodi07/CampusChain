@@ -12,25 +12,28 @@ export const recordDonation = async ({
   payment_reference,
 }) => {
   // WHY: This service must perform exactly one SQL INSERT with no business logic.
-  // NOTE: current schema/MetaMask donate controller only uses these columns.
-  // Payment-related fields are intentionally ignored here to preserve existing behavior.
 
+  // WHY: Preserve tx_hash behavior (tx_hash || Date.now()) exactly as before.
+  const effectiveTxHash = tx_hash || Date.now();
+
+  // WHY: Insert the payment metadata as well so Razorpay and MetaMask can share the same DB recording layer.
+  // This uses the existing columns in the `donations` table.
   const sql = `
       INSERT INTO donations 
-      (fundraiser_id, donor_address, amount, tx_hash, donated_at)
-      VALUES (?, ?, ?, ?, NOW())
+      (fundraiser_id, donor_address, amount, tx_hash, payment_method, payment_reference, donated_at)
+      VALUES (?, ?, ?, ?, ?, ?, NOW())
     `;
-
-  // WHY: donation.controller.js historically used tx_hash || Date.now() for the insert.
-  const effectiveTxHash = tx_hash || Date.now();
 
   const [result] = await db.promise().query(sql, [
     fundraiser_id,
     donor_address,
     amount,
     effectiveTxHash,
+    payment_method,
+    payment_reference,
   ]);
 
   return result.insertId;
 };
+
 

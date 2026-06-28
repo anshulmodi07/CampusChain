@@ -1,5 +1,7 @@
 import Razorpay from "razorpay";
 import ExpressError from "../utils/ExpressError.js";
+import { recordDonation } from "../services/donation.service.js";
+
 
 // Razorpay payment gateway logic only.
 // This controller intentionally does NOT record donations or write blockchain data.
@@ -95,14 +97,27 @@ export const verifyPayment = async (req, res) => {
     });
   }
 
+  // WHY: On successful verification, record the donation in the same DB layer used by MetaMask.
+  // This keeps HTTP concerns in the controller and DB INSERT in the service.
+  const donationId = await recordDonation({
+    fundraiser_id,
+    donor_address: req.user.wallet,
+    amount,
+    tx_hash: null,
+    payment_method: "razorpay",
+    payment_reference: razorpay_payment_id,
+  });
+
   // WHY: Return a minimal success structure for frontend to proceed.
   return res.json({
     success: true,
     verified: true,
     payment_id: razorpay_payment_id,
     order_id: razorpay_order_id,
+    donationId,
   });
 };
+
 
 export const createOrder = async (req, res) => {
 
