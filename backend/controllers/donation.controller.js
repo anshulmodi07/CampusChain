@@ -1,5 +1,7 @@
 import db from "../db/index.js";
 import ExpressError from "../utils/ExpressError.js";
+import { recordDonation } from "../services/donation.service.js";
+
 
 // -------- DONATE --------
 export const donate = async (req, res) => {
@@ -9,31 +11,33 @@ export const donate = async (req, res) => {
   fundraiser_id = parseInt(fundraiser_id);
   amount = parseFloat(amount);
 
+  // WHY: HTTP controller validates request shape before calling DB layer.
   if (isNaN(fundraiser_id) || isNaN(amount)) {
     throw new ExpressError(400, "Invalid donation data");
   }
 
   try {
-    const sql = `
-      INSERT INTO donations 
-      (fundraiser_id, donor_address, amount, tx_hash, donated_at)
-      VALUES (?, ?, ?, ?, NOW())
-    `;
-
-    const [result] = await db.promise().query(
-      sql,
-      [fundraiser_id, donorWallet, amount, tx_hash || Date.now()]
-    );
+    // WHY: DB insertion is delegated to a reusable service.
+    // Keep behavior IDENTICAL: tx_hash falls back to Date.now().
+    const donationId = await recordDonation({
+      fundraiser_id,
+      donor_address: donorWallet,
+      amount,
+      tx_hash,
+      payment_method: null,
+      payment_reference: null,
+    });
 
     res.json({
       message: "Donation successful",
-      donationId: result.insertId
+      donationId,
     });
 
   } catch (err) {
     throw new ExpressError(500, "Database error during donation");
   }
 };
+
 
 // -------- MY DONATIONS --------
 export const myDonations = async (req, res) => {
