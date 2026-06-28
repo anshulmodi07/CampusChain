@@ -1,4 +1,4 @@
-const API_BASE = "https://campuschain-bqul.onrender.com";
+const API_BASE = window.API_BASE;
 
 document.getElementById("saveBtn").addEventListener("click", async () => {
   const token = localStorage.getItem("token");

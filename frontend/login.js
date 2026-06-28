@@ -3,7 +3,7 @@
 // If wrong → show error
 // If correct → save token
 // Redirect based on role
-const API_BASE = "https://campuschain-bqul.onrender.com";
+const API_BASE = window.API_BASE;
 // Redirect already-logged-in user away from login page
 const token = localStorage.getItem("token");
 if (token) {

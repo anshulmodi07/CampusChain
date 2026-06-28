@@ -1,4 +1,4 @@
-const API_BASE = "https://campuschain-bqul.onrender.com";
+const API_BASE = window.API_BASE;
 
 async function signupUser() {
   const name = document.getElementById("name").value.trim();

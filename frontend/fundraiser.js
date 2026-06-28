@@ -1,4 +1,4 @@
-const API_BASE = "https://campuschain-bqul.onrender.com";
+const API_BASE = window.API_BASE;
 
 async function loadFundraisers() {
   const grid = document.getElementById("fundraisersGrid");
