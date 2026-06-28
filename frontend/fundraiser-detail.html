@@ -296,7 +296,8 @@
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
     }
 
-    #ethMsg {
+    #donationMsg {
+
       color: #059669;
       margin-top: 15px;
       font-weight: 600;
@@ -307,7 +308,8 @@
       display: none;
     }
 
-    #ethMsg.show {
+    #donationMsg.show {
+
       display: block;
     }
 
@@ -463,12 +465,17 @@
     <button onclick="connectMetaMask()">Connect MetaMask Wallet</button>
 
     <div class="input-group">
-      <label for="ethAmount">Contribution Amount (ETH)</label>
-      <input type="number" id="ethAmount" placeholder="Enter amount in ETH" step="0.001" min="0">
+      <label id="amountLabel" for="donationAmount">Contribution Amount</label>
+      <input type="number" id="donationAmount" placeholder="Enter donation amount" step="0.001" min="0">
+
     </div>
 
-    <button onclick="donateEth()">💝 Contribute Now</button>
-    <p id="ethMsg"></p>
+    <button onclick="donateEth()">🦊 Donate with MetaMask</button>
+
+    <button onclick="donateRazorpay()">💳 Donate with Razorpay</button>
+    <p id="donationMsg"></p>
+
+
 
     <div class="comments-section">
       <h2>Leave a Message</h2>

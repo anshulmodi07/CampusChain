@@ -20,8 +20,95 @@ const getRazorpayClient = () => {
   return new Razorpay({ key_id, key_secret });
 };
 
+const verifyRazorpaySignature = async ({ razorpay_order_id, razorpay_payment_id }, razorpay_signature) => {
+  // WHY: Razorpay signs the order/payment pair to prove authenticity.
+
+  // We re-create that signature on the server and compare it with the client-provided signature.
+  const secret = process.env.RAZORPAY_KEY_SECRET;
+  if (!secret) {
+    throw new ExpressError(
+      500,
+      "Razorpay is not configured. Missing RAZORPAY_KEY_SECRET."
+    );
+  }
+
+  // Razorpay signature format: hex string (HMAC-SHA256)
+  // Expected payload: "order_id|payment_id"
+  const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
+
+  const crypto = await import("crypto");
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+
+  return { expected };
+};
+
+export const verifyPayment = async (req, res) => {
+  // WHY: This endpoint exists to prove that the Razorpay signature matches the
+  // order/payment pair reported by the client.
+  // No DB writes, no blockchain, no donation recording are performed here.
+
+  const {
+    fundraiser_id,
+    amount,
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+  } = req.body;
+
+  // WHY: Validate required fields early to return clean 400 errors rather than
+  // crashing signature computation.
+  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    throw new ExpressError(400, "Missing razorpay fields.");
+  }
+
+  // Optional validation only for sanity (no DB usage).
+  if (fundraiser_id == null || amount == null) {
+    // Keep behavior strict to avoid accepting incomplete client payloads.
+    throw new ExpressError(400, "Missing fundraiser_id or amount.");
+  }
+
+  // WHY: Ensure we have the secret before attempting verification.
+  const secret = process.env.RAZORPAY_KEY_SECRET;
+  if (!secret) {
+    throw new ExpressError(
+      500,
+      "Razorpay is not configured. Missing RAZORPAY_KEY_SECRET."
+    );
+  }
+
+  // WHY: Re-compute expected HMAC and compare with provided signature.
+  // Expected: HMAC_SHA256(razorpay_order_id + "|" + razorpay_payment_id)
+  const { expected } = await verifyRazorpaySignature(
+    { razorpay_order_id, razorpay_payment_id },
+    razorpay_signature
+  );
+
+  if (expected !== razorpay_signature) {
+    // WHY: Signature mismatch means tampering or an incorrect payload.
+    return res.status(401).json({
+      success: false,
+      verified: false,
+      message: "Invalid Razorpay signature.",
+    });
+  }
+
+  // WHY: Return a minimal success structure for frontend to proceed.
+  return res.json({
+    success: true,
+    verified: true,
+    payment_id: razorpay_payment_id,
+    order_id: razorpay_order_id,
+  });
+};
+
 export const createOrder = async (req, res) => {
+
   const { amount, fundraiser_id } = req.body;
+
+
 
   // Validate inputs early to prevent leaking internal errors and to avoid
   // sending invalid requests to Razorpay.
