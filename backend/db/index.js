@@ -12,15 +12,20 @@ console.log("DB_USER =", process.env.DB_USER);
 console.log("DB_HOST =", process.env.DB_HOST);
 console.log("DB_PASS =", process.env.DB_PASS ? "EXISTS" : "MISSING");
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+
   ssl: {
     rejectUnauthorized: false,
   },
+
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
 export default db;

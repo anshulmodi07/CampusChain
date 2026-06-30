@@ -8,7 +8,7 @@
     window.location.hostname === "127.0.0.1";
 
   const API_BASE = isLocalHost
-    ? "http://localhost:8080"
+    ? "http://localhost:5000"
     : "https://campuschain-bqul.onrender.com";
 
   // Expose globally for all existing (non-ESM) scripts.
