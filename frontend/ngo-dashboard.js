@@ -1,4 +1,4 @@
-const API_BASE = "http://13.127.218.198";
+const API_BASE = "https://campuschain.online";
 
 // Protect dashboard: only NGOs allowed
 window.onload = () => {

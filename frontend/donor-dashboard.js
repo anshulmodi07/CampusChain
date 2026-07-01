@@ -1,7 +1,7 @@
 // =============================
 // 🔒 Protect Donor Dashboard
 // =============================
-const API_BASE = "http://13.127.218.198";
+const API_BASE = "https://campuschain.online";
 
 window.onload = () => {
   const token = localStorage.getItem("token");

@@ -3,7 +3,7 @@
 // If wrong → show error
 // If correct → save token
 // Redirect based on role
-const API_BASE = "http://13.127.218.198";
+const API_BASE = "https://campuschain.online";
 // Redirect already-logged-in user away from login page
 const token = localStorage.getItem("token");
 if (token) {
