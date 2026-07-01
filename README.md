@@ -1,17 +1,39 @@
 # 🎓 CampusChain
 
+![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-REST%20API-000000?style=for-the-badge&logo=express&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-Smart%20Contract-363636?style=for-the-badge&logo=solidity&logoColor=white)
+![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia%20Testnet-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white)
+![ethers.js](https://img.shields.io/badge/ethers.js-Web3%20Library-2535A0?style=for-the-badge&logoColor=white)
+![MetaMask](https://img.shields.io/badge/MetaMask-Wallet-F6851B?style=for-the-badge&logo=metamask&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-TiDB%20Cloud-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-Reverse%20Proxy-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![PM2](https://img.shields.io/badge/PM2-Process%20Manager-2B037A?style=for-the-badge&logo=pm2&logoColor=white)
+![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Let's Encrypt](https://img.shields.io/badge/SSL-Let's%20Encrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
 **CampusChain** is a Web3-based crowdfunding platform designed for college campuses to bring **transparency** and **trust** into student-led fundraising. It uses blockchain as a public, immutable ledger so that fundraising data can be independently verified without relying on blind trust in organizers.
 
 ---
-
 ## 🌐 Live Deployment
 
 - **Frontend (Netlify):** https://campuschain07.netlify.app
 - **Backend API (AWS EC2):** https://campuschain.online
-- **Smart Contract (Etherscan):**
-  https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc
+- **Smart Contract (Etherscan):** https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc
 
 ---
+
+## 🎥 Demo Video
+
+Watch a full walkthrough of CampusChain, explaining the problem, architecture, and live demo:
+
+📺 **[Watch the demo video](https://drive.google.com/file/d/1ggKxY5vZbAyPPcyznEWltzQ9AaclkdGc/view?usp=sharing)**
+
+---
+
 
 ## 🔐 Demo Login Credentials
 
