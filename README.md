@@ -10,7 +10,8 @@ https://campuschain-bqul.onrender.com/health
 
 - **Frontend (Netlify):** https://campuschain07.netlify.app  
 - **Backend API (Render):** https://campuschain-bqul.onrender.com  
-- **Blockchain:** Ethereum Sepolia Testnet  
+- - **Smart Contract (Etherscan):**  
+  https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc
 
 
 
