@@ -2,7 +2,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const fundraiserId = urlParams.get("id");
 
-const API_BASE = "https://campuschain-bqul.onrender.com";
+const API_BASE = "http://13.127.218.198";
 
 
 // ------- Convert to readable ETH -------

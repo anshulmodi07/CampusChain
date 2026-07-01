@@ -1,4 +1,4 @@
-const API_BASE = "https://campuschain-bqul.onrender.com";
+const API_BASE = "http://13.127.218.198";
 
 let web3;
 let contract;

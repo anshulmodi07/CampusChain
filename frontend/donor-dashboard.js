@@ -1,7 +1,7 @@
 // =============================
 // 🔒 Protect Donor Dashboard
 // =============================
-const API_BASE = "https://campuschain-bqul.onrender.com";
+const API_BASE = "http://13.127.218.198";
 
 window.onload = () => {
   const token = localStorage.getItem("token");
