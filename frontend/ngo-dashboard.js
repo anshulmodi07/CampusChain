@@ -38,8 +38,19 @@ window.onload = () => {
     });
   }
 
+  // Load cached wallet address on load if valid
+  const wallet = localStorage.getItem("wallet");
+  const status = document.getElementById("walletStatus");
+  if (wallet && /^0x[a-fA-F0-9]{40}$/.test(wallet) && status) {
+    status.textContent = "Connected Wallet: " + wallet;
+    status.className = "connected";
+  }
+
   const connectMetaMaskBtn = document.getElementById("connectMetaMaskBtn");
   if (connectMetaMaskBtn) {
+    if (!window.ethereum) {
+      connectMetaMaskBtn.innerText = "Install MetaMask 🦊";
+    }
     connectMetaMaskBtn.addEventListener("click", () => {
       connectMetaMask();
     });
@@ -117,8 +128,7 @@ async function connectMetaMask() {
   const status = document.getElementById("walletStatus");
 
   if (!window.ethereum) {
-    status.textContent = "MetaMask not installed!";
-    status.className = "disconnected";
+    window.open("https://metamask.io/download/", "_blank");
     return;
   }
 

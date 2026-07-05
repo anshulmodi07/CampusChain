@@ -286,5 +286,42 @@
 ### Current Status
 - 🟢 Completed. Version 2.8 Part 2 fixes are fully verified and ready.
 
+- Merge and Release (Perform main-merge operations, deployment procedures, and v2.0.0 tag).
+
+---
+
+## Session: 2026-07-06 (Version 2.8 Part 3 Implementation)
+
+### Current Version
+- Version 2.8 Part 3 (NGO MetaMask Helpers)
+
+### Objective
+- Set up install redirects and cached wallet displays for NGO dashboard and create fundraiser views if wallet is missing.
+
+### Problems Found
+- NGO dashboard and campaign creation views had no install helper redirection logic for non-wallet users.
+
+### Root Causes
+- Wallet checks and button connect handlers lacked fallbacks for missing extensions.
+
+### Files Modified
+- **Frontend Source Files**:
+  - `frontend/ngo-dashboard.js`
+  - `frontend/create-fundraiser.js`
+- **Documentation**:
+  - `docs/GUIDE.md`
+- **Release Documentation**:
+  - `docs/releases/v2.8.3.md`
+
+### Testing Performed
+- Ran browser subagent verification tests. NGO dashboard and campaign creation wallet connect buttons dynamically render "Install MetaMask 🦊" when MetaMask is absent.
+
+### Documentation Updated
+- `docs/releases/v2.8.3.md`
+- `docs/SESSION_LOG.md`
+
+### Current Status
+- 🟢 Completed. Version 2.8 Part 3 fixes are fully verified and ready.
+
 ### Next Recommended Task
 - Merge and Release (Perform main-merge operations, deployment procedures, and v2.0.0 tag).

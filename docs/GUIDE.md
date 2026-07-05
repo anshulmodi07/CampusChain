@@ -48,7 +48,7 @@ main
 
 Current Version
 
-Version 2.8 Part 2
+Version 2.8 Part 3
 
 Status
 
@@ -497,6 +497,38 @@ All details page layout exclusions and dashboard statistic checks are verified.
 Commit
 
 fix: address leaks, campaigns count, and NGO payment exclusions
+
+---
+
+# Version 2.8 Part 3
+
+Title
+
+NGO MetaMask Helpers
+
+Status
+
+🟢 Completed
+
+Objective
+
+Add cached wallet checks and MetaMask install download helper redirection triggers to NGO dashboard and create fundraiser views.
+
+Tasks
+
+☑ Display cached valid wallet address on NGO dashboard load
+
+☑ Redirect NGO dashboard MetaMask connects if extension is missing
+
+☑ Redirect campaign creation MetaMask connects if extension is missing
+
+Exit Criteria
+
+All NGO-scoped wallet connection updates and redirections are verified.
+
+Commit
+
+fix: ngo dashboard wallet load and metamask download redirects
 
 ---
 

@@ -325,4 +325,26 @@ Commit
 
 fix: address leaks, campaigns count, and NGO payment exclusions
 
+---
+
+## Version 2.8 Part 3
+
+Status
+
+Completed
+
+Summary
+
+- Configured NGO dashboard connect buttons to display "Install MetaMask 🦊" and redirect to downloads if missing window.ethereum.
+- Configured campaign creation connect buttons to display "Install MetaMask 🦊" and redirect if missing window.ethereum.
+- Standardized onload valid cached wallet displays for NGO dashboard.
+
+Detailed Engineering Report
+
+docs/releases/v2.8.3.md
+
+Commit
+
+fix: ngo dashboard wallet load and metamask download redirects
+
 End of Changelog.

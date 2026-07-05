@@ -18,11 +18,20 @@ window.onload = () => {
   }
 
   initNavbar();
+
+  // Check MetaMask install status
+  const connectWalletBtn = document.getElementById("connectWalletBtn");
+  if (connectWalletBtn && !window.ethereum) {
+    connectWalletBtn.innerText = "Install MetaMask 🦊";
+  }
 };
 
 // ---------------- CONNECT WALLET ----------------
 async function connectWallet() {
-  if (!window.ethereum) return alert("Please install MetaMask");
+  if (!window.ethereum) {
+    window.open("https://metamask.io/download/", "_blank");
+    return;
+  }
 
   try {
     await ethereum.request({ method: "eth_requestAccounts" });
