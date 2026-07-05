@@ -21,7 +21,7 @@ window.onload = () => {
 
   // If wallet already connected earlier
   const wallet = localStorage.getItem("wallet");
-  if (wallet) {
+  if (wallet && /^0x[a-fA-F0-9]{40}$/.test(wallet)) {
     showWalletStatus(`Connected: ${wallet}`, true);
   }
 
@@ -49,6 +49,9 @@ window.onload = () => {
 
   const connectMetaMaskBtn = document.getElementById("connectMetaMaskBtn");
   if (connectMetaMaskBtn) {
+    if (!window.ethereum) {
+      connectMetaMaskBtn.innerText = "Install MetaMask 🦊";
+    }
     connectMetaMaskBtn.addEventListener("click", () => {
       connectMetaMask();
     });
@@ -112,7 +115,8 @@ async function loadDonations() {
       }
     });
 
-    updateStats(totalEth, totalInr, donations.length);
+    const uniqueCampaigns = new Set(donations.map(d => d.fundraiser_id));
+    updateStats(totalEth, totalInr, uniqueCampaigns.size);
 
     // 👉 Display cards
     container.innerHTML = "";
@@ -177,7 +181,7 @@ function updateStats(totalEth, totalInr, count) {
 // =============================
 async function connectMetaMask() {
   if (!window.ethereum) {
-    showWalletStatus("❌ MetaMask not installed! Please install MetaMask.", false);
+    window.open("https://metamask.io/download/", "_blank");
     return;
   }
 

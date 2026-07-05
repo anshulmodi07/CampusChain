@@ -302,4 +302,27 @@ Commit
 
 test: complete production QA
 
+---
+
+## Version 2.8 Part 2
+
+Status
+
+Completed
+
+Summary
+
+- Restricted connected wallet display to valid Ethereum hex address formats (`/^0x[a-fA-F0-9]{40}$/`).
+- Aggregated stats count for unique campaigns supported rather than transaction counts.
+- Hidden campaign support/payment cards on detail views for NGO role accounts.
+- Configured MetaMask installation download links redirection for missing extensions.
+
+Detailed Engineering Report
+
+docs/releases/v2.8.2.md
+
+Commit
+
+fix: address leaks, campaigns count, and NGO payment exclusions
+
 End of Changelog.

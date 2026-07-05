@@ -82,7 +82,8 @@ let userAccount;
 
 async function connectMetaMask() {
   if (!window.ethereum) {
-    return alert("MetaMask not detected! Install MetaMask extension.");
+    window.open("https://metamask.io/download/", "_blank");
+    return;
   }
 
   try {
@@ -357,4 +358,18 @@ if (donateRazorpayBtn) donateRazorpayBtn.addEventListener("click", () => donateR
 initNavbar();
 loadComments();
 loadFundraiser();
+
+// Hide donation box if logged in as NGO
+const role = localStorage.getItem("role");
+if (role === "ngo") {
+  const donationBox = document.querySelector(".donation-box");
+  if (donationBox) {
+    donationBox.style.display = "none";
+  }
+}
+
+// Update connect button text if MetaMask is missing
+if (connectMetaMaskBtn && !window.ethereum) {
+  connectMetaMaskBtn.innerText = "Install MetaMask 🦊";
+}
 

@@ -48,7 +48,7 @@ main
 
 Current Version
 
-Version 2.8
+Version 2.8 Part 2
 
 Status
 
@@ -463,6 +463,40 @@ CampusChain v2 ready for production merge.
 Commit
 
 test: complete production QA
+
+---
+
+# Version 2.8 Part 2
+
+Title
+
+Final Polish & Fixes
+
+Status
+
+🟢 Completed
+
+Objective
+
+Standardize dashboard metric counts, validate local wallet strings, hide payments for NGO accounts, and add MetaMask install helper controls.
+
+Tasks
+
+☑ Validate Ethereum wallet addresses (no physical address leaks)
+
+☑ Display unique campaigns count supported on dashboard
+
+☑ Hide donation card on details screen for NGO accounts
+
+☑ Redirect missing-wallet users to MetaMask install download page
+
+Exit Criteria
+
+All details page layout exclusions and dashboard statistic checks are verified.
+
+Commit
+
+fix: address leaks, campaigns count, and NGO payment exclusions
 
 ---
 
