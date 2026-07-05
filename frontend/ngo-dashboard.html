@@ -394,10 +394,10 @@
 <body>
 
   <nav>
-    <div class="logo" onclick="window.location.href='index.html'">CampusChain</div>
+    <div class="logo">CampusChain</div>
     <ul>
       <li><a id="logoutBtn" href="#">Logout</a></li>
-      <li><button onclick="window.location.href='edit-profile.html'">Edit Profile</button></li>
+      <li><button id="editProfileBtn">Edit Profile</button></li>
     </ul>
   </nav>
 
@@ -410,15 +410,15 @@
 
     <!-- BUTTONS -->
     <div class="btn-bar">
-      <button class="btn btn-primary" onclick="window.location.href='create-fundraiser.html'">
+      <button id="createCampaignBtn" class="btn btn-primary">
         ➕ Create Campaign
       </button>
 
-      <button class="btn btn-secondary" onclick="loadMyFundraisers()">
+      <button id="myCampaignsBtn" class="btn btn-secondary">
         📂 My Campaigns
       </button>
 
-      <button class="btn btn-wallet" onclick="connectMetaMask()">
+      <button id="connectMetaMaskBtn" class="btn btn-wallet">
         🦊 Connect MetaMask
       </button>
     </div>
@@ -435,16 +435,8 @@
 
   </div>
 
-<script src="config.js"></script>
-  <script src="ngo-dashboard.js"></script>
-  <script>
-    // Logout functionality
-    document.getElementById("logoutBtn").addEventListener("click", (e) => {
-      e.preventDefault();
-      window.localStorage.removeItem("token");
-      window.location.href = "index.html";
-    });
-  </script>
+<script type="module" src="ngo-dashboard.js?v=2"></script>
+
 
 </body>
 

@@ -19,6 +19,19 @@ export const donate = async (req, res) => {
   // WHY: Orchestrate DB insert first, then attempt anchoring.
   // If anchoring fails, keep SQL record and return success (per requirements).
   try {
+    if (tx_hash) {
+      const [existing] = await db.promise().query(
+        "SELECT donation_id FROM donations WHERE tx_hash = ?",
+        [tx_hash]
+      );
+      if (existing.length > 0) {
+        return res.status(409).json({
+          success: false,
+          message: "This transaction hash has already been recorded.",
+        });
+      }
+    }
+
     const { donationId, donatedAt } = await recordDonation({
       fundraiser_id,
       donor_address: donorWallet,
@@ -26,6 +39,7 @@ export const donate = async (req, res) => {
       tx_hash,
       payment_method: "crypto",
       payment_reference: "",
+      currency: "ETH",
     });
 
     const donationHash = generateDonationHash({
@@ -56,7 +70,8 @@ export const donate = async (req, res) => {
       donationId,
     });
   } catch (err) {
-    throw new ExpressError(500, "Database error during donation");
+    console.error("MetaMask donation controller error:", err);
+    throw new ExpressError(500, "Database error during donation: " + err.message);
   }
 };
 

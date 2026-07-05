@@ -100,6 +100,17 @@ export const verifyPayment = async (req, res) => {
   }
 
   try {
+    const [existing] = await db.promise().query(
+      "SELECT donation_id FROM donations WHERE payment_reference = ?",
+      [razorpay_payment_id]
+    );
+    if (existing.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: "This payment has already been recorded.",
+      });
+    }
+
     // WHY: Record donation in SQL first.
     const {
       donationId,
@@ -111,6 +122,7 @@ export const verifyPayment = async (req, res) => {
       tx_hash: null,
       payment_method: "razorpay",
       payment_reference: razorpay_payment_id,
+      currency: "INR",
     });
 
     // WHY: Generate deterministic donation hash after INSERT.
@@ -145,7 +157,8 @@ export const verifyPayment = async (req, res) => {
       donationId,
     });
   } catch (err) {
-    throw new ExpressError(500, "Database error during Razorpay donation recording");
+    console.error("Razorpay verification database error:", err);
+    throw new ExpressError(500, "Database error during Razorpay donation recording: " + err.message);
   }
 };
 
@@ -171,25 +184,33 @@ export const createOrder = async (req, res) => {
     throw new ExpressError(400, "Amount is too small to create an order.");
   }
 
-  const razorpay = getRazorpayClient();
+  try {
+    const razorpay = getRazorpayClient();
 
-  const receipt = `campuschain_${parsedFundraiserId}_${Date.now()}`;
+    const receipt = `campuschain_${parsedFundraiserId}_${Date.now()}`;
 
-  const order = await razorpay.orders.create({
-    amount: paiseAmount,
-    currency,
-    receipt,
-    notes: {
-      fundraiser_id: String(parsedFundraiserId),
-    },
-  });
+    const order = await razorpay.orders.create({
+      amount: paiseAmount,
+      currency,
+      receipt,
+      notes: {
+        fundraiser_id: String(parsedFundraiserId),
+      },
+    });
 
-  return res.status(201).json({
-    order_id: order.id,
-    amount: order.amount,
-    currency: order.currency,
-    key_id: process.env.RAZORPAY_KEY_ID,
-  });
+    return res.status(201).json({
+      order_id: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      key_id: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (err) {
+    console.error("Razorpay order creation failed:", err);
+    throw new ExpressError(
+      err.status || 500,
+      err.message || "Failed to create order with Razorpay."
+    );
+  }
 };
 
 

@@ -1,7 +1,9 @@
 // =============================
 // 🔒 Protect Donor Dashboard
 // =============================
-const API_BASE = window.API_BASE;
+import API_BASE from "./config/api.js";
+import { initNavbar } from "./navbar.js";
+
 
 window.onload = () => {
   const token = localStorage.getItem("token");
@@ -13,24 +15,53 @@ window.onload = () => {
     return;
   }
 
+  initNavbar();
+
   // If wallet already connected earlier
   const wallet = localStorage.getItem("wallet");
   if (wallet) {
     showWalletStatus(`Connected: ${wallet}`, true);
   }
-};
 
-// =============================
-// 🚪 LOGOUT
-// =============================
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.onclick = (e) => {
-    e.preventDefault();
-    localStorage.clear();
-    window.location.href = "index.html";
-  };
-}
+  // Wire up event listeners
+  const editProfileBtn = document.getElementById("editProfileBtn");
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener("click", () => {
+      window.location.href = "edit-profile.html";
+    });
+  }
+
+  const exploreCampaignsBtn = document.getElementById("exploreCampaignsBtn");
+  if (exploreCampaignsBtn) {
+    exploreCampaignsBtn.addEventListener("click", () => {
+      window.location.href = "fundraiser.html";
+    });
+  }
+
+  const viewContributionsBtn = document.getElementById("viewContributionsBtn");
+  if (viewContributionsBtn) {
+    viewContributionsBtn.addEventListener("click", () => {
+      loadDonations();
+    });
+  }
+
+  const connectMetaMaskBtn = document.getElementById("connectMetaMaskBtn");
+  if (connectMetaMaskBtn) {
+    connectMetaMaskBtn.addEventListener("click", () => {
+      connectMetaMask();
+    });
+  }
+
+  // Event delegation for dynamic retry button
+  const donationsList = document.getElementById("donationsList");
+  if (donationsList) {
+    donationsList.addEventListener("click", (e) => {
+      if (e.target.classList.contains("retry-btn")) {
+        loadDonations();
+      }
+    });
+  }
+};
 
 // =============================
 // 📦 Load My Donations
@@ -119,7 +150,7 @@ async function loadDonations() {
         <div class="empty-state-icon">❌</div>
         <h3>Failed to load donations</h3>
         <p>Please check your connection and try again.</p>
-        <button class="btn" onclick="loadDonations()">Retry</button>
+        <button class="btn retry-btn">Retry</button>
       </div>
     `;
   }

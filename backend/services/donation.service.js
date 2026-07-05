@@ -10,6 +10,7 @@ export const recordDonation = async ({
   tx_hash,
   payment_method,
   payment_reference,
+  currency,
 }) => {
   // WHY: This service must perform exactly one SQL INSERT with no business logic.
 
@@ -20,8 +21,8 @@ export const recordDonation = async ({
   // This uses the existing columns in the `donations` table.
   const sql = `
       INSERT INTO donations 
-      (fundraiser_id, donor_address, amount, tx_hash, payment_method, payment_reference, donated_at)
-      VALUES (?, ?, ?, ?, ?, ?, NOW())
+      (fundraiser_id, donor_address, amount, tx_hash, payment_method, payment_reference, currency, donated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
     `;
 
   const [result] = await db.promise().query(sql, [
@@ -31,6 +32,7 @@ export const recordDonation = async ({
     effectiveTxHash,
     payment_method,
     payment_reference,
+    currency || "ETH",
   ]);
 
   // WHY: Return donatedAt so controllers can deterministically compute the anchored hash

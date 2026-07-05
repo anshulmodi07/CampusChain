@@ -1,16 +1,12 @@
+import API_BASE from "./config/api.js";
+import { initNavbar } from "./navbar.js";
+
 // ------- Get fundraiser ID from URL -------
 const urlParams = new URLSearchParams(window.location.search);
 const fundraiserId = urlParams.get("id");
 
-const API_BASE = window.API_BASE;
-
-
 // ------- Convert to readable ETH/amount -------
 function formatAmount(value) {
-
-  // Keep numeric formatting consistent across both payment methods.
-
-
   if (!value || isNaN(value)) return "0.0000";
   return parseFloat(value).toFixed(4);
 }
@@ -29,14 +25,10 @@ async function loadFundraiser() {
     const raisedAmount = await loadRaisedAmount();
 
     document.getElementById("raised").innerText = formatAmount(raisedAmount);
-
-
     document.getElementById("goal").innerText = formatAmount(data.goal);
-
 
     const percentage = data.goal > 0 ? (raisedAmount / data.goal) * 100 : 0;
     document.getElementById("progressFill").style.width = percentage + "%";
-
   } catch (err) {
     console.error("Error loading fundraiser:", err);
   }
@@ -55,15 +47,20 @@ async function loadRaisedAmount() {
 }
 
 async function loadComments() {
-  const fundraiserId = new URLSearchParams(window.location.search).get("id");
-
   const res = await fetch(`${API_BASE}/api/comments/${fundraiserId}`);
-  const comments = await res.json();
+  const data = await res.json();
+
+  // Backend may return either an array or { comments: [...] }
+  const comments = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.comments)
+      ? data.comments
+      : [];
 
   const commentsList = document.getElementById("commentsList");
   commentsList.innerHTML = "";
 
-  comments.forEach(c => {
+  comments.forEach((c) => {
     const div = document.createElement("div");
     div.innerHTML = `<strong>${c.name}</strong>: ${c.comment_text} <br>
     <small>${new Date(c.created_at).toLocaleString()}</small>
@@ -72,39 +69,11 @@ async function loadComments() {
   });
 }
 
-loadComments();
-
-document.getElementById("postCommentBtn").addEventListener("click", async () => {
-  const commentText = document.getElementById("commentInput").value.trim();
-  const fundraiserId = new URLSearchParams(window.location.search).get("id");
-  const token = localStorage.getItem("token");
-
-  await fetch(`${API_BASE}/api/comment`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      fundraiser_id: fundraiserId,
-      comment_text: commentText
-    })
-  });
-
-  document.getElementById("commentInput").value = "";
-  loadComments();
-});
-
-
-loadFundraiser();   // initial load
-
-// ===================== BLOCKCHAIN PART =====================
-
+// ===================== Donation - MetaMask =====================
 let web3;
 let contract;
 let userAccount;
 
-// ------- Connect MetaMask -------
 async function connectMetaMask() {
   if (!window.ethereum) {
     return alert("MetaMask not detected! Install MetaMask extension.");
@@ -122,102 +91,92 @@ async function connectMetaMask() {
 
     // Contract present globally from contractConfig.js
     contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
-
   } catch (error) {
     console.error("MetaMask connection failed:", error);
     alert("Failed to connect MetaMask.");
   }
 }
 
-// ------- Donate using ETH + Save in SQL -------
-function updateAmountLabel(method) {
-  const label = document.getElementById("amountLabel");
-  if (!label) return;
-
-  if (method === "metamask") {
-    label.innerText = "Contribution Amount (ETH)";
-    return;
-  }
-
-  if (method === "razorpay") {
-    label.innerText = "Donation Amount (₹ INR)";
-    return;
-  }
+const connectMetaMaskBtn = document.getElementById("connectMetaMaskBtn");
+if (connectMetaMaskBtn) {
+  connectMetaMaskBtn.addEventListener("click", () => connectMetaMask());
 }
 
 async function donateEth() {
-
-  const amount = document.getElementById("donationAmount").value;
-
-  // WHY: Update label and message area to match the active payment method.
-  updateAmountLabel("metamask");
-
+  const amountInput = document.getElementById("ethAmount");
+  const amount = amountInput.value.trim();
+  const donateEthBtn = document.getElementById("donateEthBtn");
 
   if (!userAccount) return alert("Please connect MetaMask first!");
-
-  if (!amount || amount <= 0) return alert("Enter valid ETH amount");
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) return alert("Enter valid ETH amount");
 
   const token = localStorage.getItem("token");
-  if (!token) {
-    return alert("Please login to record your donation.");
-  }
+  if (!token) return alert("Please login to record your donation.");
+
+  donateEthBtn.disabled = true;
+  const originalText = donateEthBtn.innerText;
+  donateEthBtn.innerText = "Processing MetaMask Payment...";
 
   try {
-    // Send ETH transaction
     const tx = await contract.methods.donate(fundraiserId).send({
       from: userAccount,
-      value: web3.utils.toWei(amount.toString(), "ether")
+      value: web3.utils.toWei(amount.toString(), "ether"),
     });
 
-    // Save into SQL
-    await fetch(`${API_BASE}/api/donate`, {
+    const res = await fetch(`${API_BASE}/api/donate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        Authorization: token,
       },
       body: JSON.stringify({
         fundraiser_id: fundraiserId,
-        amount: amount,
+        amount: parseFloat(amount),
         tx_hash: tx.transactionHash,
         payment_method: "crypto",
-        payment_reference: null
-      })
+        payment_reference: null,
+      }),
     });
 
-    document.getElementById("donationMsg").innerHTML = `
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || "Failed to record donation on backend.");
+    }
 
+    document.getElementById("donationMsg").innerHTML = `
       Donation successful! 🚀 <br>
       <a href="https://sepolia.etherscan.io/tx/${tx.transactionHash}" target="_blank">
         View on Etherscan
       </a>
     `;
+    document.getElementById("donationMsg").classList.add("show");
+    amountInput.value = "";
 
-    loadFundraiser();  // update raised
-
+    loadFundraiser();
   } catch (err) {
     console.error("Donation error:", err);
-    alert("Transaction failed or rejected.");
+    alert(err.message || "Transaction failed or rejected.");
+  } finally {
+    donateEthBtn.disabled = false;
+    donateEthBtn.innerText = originalText;
   }
 }
 
-// ===================== RAZORPAY PART (DONATION OPTION) =====================
-
-// Cache Razorpay Checkout SDK load so we only inject the script once.
+// ===================== Donation - Razorpay =====================
 let razorpaySdkLoadPromise = null;
 
 function loadRazorpayCheckoutSdk() {
-  // WHY: The HTML page doesn't include Razorpay SDK. Injecting it dynamically
-  // keeps MetaMask flow untouched and avoids global script changes.
   if (window.Razorpay) return Promise.resolve();
   if (razorpaySdkLoadPromise) return razorpaySdkLoadPromise;
 
   razorpaySdkLoadPromise = new Promise((resolve, reject) => {
     const existing = document.getElementById("razorpay-checkout-js");
     if (existing) {
-      // If script tag exists but SDK not ready yet, wait for onload.
       existing.addEventListener("load", () => resolve());
-      existing.addEventListener("error", () => reject(new Error("Failed to load Razorpay SDK.")));
+      existing.addEventListener(
+        "error",
+        () => reject(new Error("Failed to load Razorpay SDK."))
+      );
       return;
     }
 
@@ -233,52 +192,42 @@ function loadRazorpayCheckoutSdk() {
   return razorpaySdkLoadPromise;
 }
 
-// Donate via Razorpay (frontend-only). This intentionally does NOT verify payment
-// and does NOT call donation.controller or blockchain logic.
-//
-// WHY: Only frontend checkout is implemented; backend verification + donation recording remain separate.
 async function donateRazorpay() {
-
-  // WHY: Keep UX consistent—use the existing contribution amount input.
-  const amount = document.getElementById("donationAmount").value;
-
-  // WHY: Update label and message area to match the active payment method.
-  updateAmountLabel("razorpay");
-
-
-  const fundraiserId = new URLSearchParams(window.location.search).get("id");
-
-  if (!amount || amount <= 0) return alert("Enter valid donation amount.");
+  const amountInput = document.getElementById("inrAmount");
+  const amount = amountInput.value.trim();
+  const donateRazorpayBtn = document.getElementById("donateRazorpayBtn");
 
   const token = localStorage.getItem("token");
   if (!token) return alert("Please login to donate.");
-
   if (!fundraiserId) return alert("Fundraiser id missing from URL.");
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) return alert("Enter valid donation amount.");
+
+  donateRazorpayBtn.disabled = true;
+  const originalText = donateRazorpayBtn.innerText;
+  donateRazorpayBtn.innerText = "Initializing Razorpay...";
 
   try {
-    // WHY: Ensure Razorpay JS SDK is available before creating Checkout.
     await loadRazorpayCheckoutSdk();
 
-    // WHY: backend must create an order so Razorpay can render a valid checkout.
     const res = await fetch(`${API_BASE}/api/razorpay/create-order`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        
-        fundraiser_id: fundraiserId,
-        amount: amount,
-      }),
+      body: JSON.stringify({ fundraiser_id: fundraiserId, amount: parseFloat(amount) }),
     });
 
     if (!res.ok) {
-      const errText = await res.text().catch(() => "");
-      throw new Error(`Failed to create Razorpay order (${res.status}). ${errText}`);
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `Failed to create Razorpay order (${res.status}).`);
     }
 
     const order = await res.json();
+
+    // Re-enable button when modal opens so user can retry on dismiss
+    donateRazorpayBtn.disabled = false;
+    donateRazorpayBtn.innerText = originalText;
 
     const options = {
       key: order.key_id,
@@ -287,12 +236,14 @@ async function donateRazorpay() {
       name: "CampusChain",
       description: "Donation",
       order_id: order.order_id,
-      // WHY: Frontend must only verify payment status with the backend.
       handler: async function (response) {
+        donateRazorpayBtn.disabled = true;
+        donateRazorpayBtn.innerText = "Verifying payment...";
+
         try {
           const payload = {
-            fundraiser_id: new URLSearchParams(window.location.search).get("id"),
-            amount: document.getElementById("donationAmount")?.value ?? document.getElementById("ethAmount").value,
+            fundraiser_id: fundraiserId,
+            amount: parseFloat(amount),
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
@@ -302,38 +253,84 @@ async function donateRazorpay() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(payload),
           });
 
-          // WHY: Success path should only log verification result from backend.
-          const verifyJson = await verifyRes.json().catch(() => ({}));
-          console.log(verifyJson);
+          if (!verifyRes.ok) {
+            const verifyErr = await verifyRes.json().catch(() => ({}));
+            throw new Error(verifyErr.message || "Payment verification failed.");
+          }
 
+          document.getElementById("donationMsg").innerHTML = `
+            Donation successful! 🚀 <br>
+            Payment ID: ${response.razorpay_payment_id}
+          `;
+          document.getElementById("donationMsg").classList.add("show");
+          amountInput.value = "";
+
+          loadFundraiser();
         } catch (e) {
-          console.error("Razorpay verify call failed:", e);
+          console.error("Razorpay verification failed:", e);
+          alert(e.message || "Payment verification failed.");
+        } finally {
+          donateRazorpayBtn.disabled = false;
+          donateRazorpayBtn.innerText = originalText;
         }
       },
-
-      // WHY: Provide a clear error path when user closes/cancels or checkout fails.
       modal: {
         ondismiss: function () {
           console.log("Razorpay popup dismissed");
+          donateRazorpayBtn.disabled = false;
+          donateRazorpayBtn.innerText = originalText;
         },
       },
-      // Optional: capture checkout-level errors.
-      // Razorpay passes error to the provided callback when available.
-      // (We keep it minimal and non-invasive.)
     };
 
     const rzp = new window.Razorpay(options);
-
-    // WHY: This opens Razorpay's hosted payment popup.
     rzp.open();
   } catch (err) {
     console.error("Razorpay donation error:", err);
     alert(err.message || "Razorpay payment failed.");
+    donateRazorpayBtn.disabled = false;
+    donateRazorpayBtn.innerText = originalText;
   }
 }
+
+// ===================== Wire remaining UI events =====================
+const postCommentBtn = document.getElementById("postCommentBtn");
+if (postCommentBtn) {
+  postCommentBtn.addEventListener("click", async () => {
+    const commentText = document.getElementById("commentInput").value.trim();
+    const token = localStorage.getItem("token");
+
+    await fetch(`${API_BASE}/api/comment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        fundraiser_id: fundraiserId,
+        comment_text: commentText,
+      }),
+    });
+
+    document.getElementById("commentInput").value = "";
+    loadComments();
+  });
+}
+
+// Donation action buttons (were previously inline onclick handlers)
+const donateEthBtn = document.getElementById("donateEthBtn");
+const donateRazorpayBtn = document.getElementById("donateRazorpayBtn");
+if (donateEthBtn) donateEthBtn.addEventListener("click", () => donateEth());
+if (donateRazorpayBtn) donateRazorpayBtn.addEventListener("click", () => donateRazorpay());
+
+
+// Initial render
+initNavbar();
+loadComments();
+loadFundraiser();
 

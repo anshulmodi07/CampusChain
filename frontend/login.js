@@ -3,13 +3,19 @@
 // If wrong → show error
 // If correct → save token
 // Redirect based on role
-const API_BASE = window.API_BASE;
+import API_BASE from "./config/api.js";
+
 // Redirect already-logged-in user away from login page
 const token = localStorage.getItem("token");
 if (token) {
   window.location.href = "index.html";
 }
 
+
+const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+if (loginSubmitBtn) {
+  loginSubmitBtn.addEventListener("click", () => loginUser());
+}
 
 async function loginUser() {
   const email = document.getElementById("email").value.trim();
@@ -58,3 +64,4 @@ try {
   }
 }
 
+window.loginUser = loginUser;

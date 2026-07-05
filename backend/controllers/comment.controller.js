@@ -21,7 +21,8 @@ export const addComment = async (req, res) => {
     res.json({ message: "Comment added" });
 
   } catch (err) {
-    throw new ExpressError(500, "Database error while adding comment");
+    console.error("Add comment database error:", err);
+    throw new ExpressError(500, "Database error while adding comment: " + err.message);
   }
 };
 
@@ -42,6 +43,7 @@ export const getComments = async (req, res) => {
     res.json(rows);
 
   } catch (err) {
-    throw new ExpressError(500, "Database error while fetching comments");
+    console.error("Get comments database error:", err);
+    throw new ExpressError(500, "Database error while fetching comments: " + err.message);
   }
 };

@@ -1,4 +1,6 @@
-const API_BASE = window.API_BASE;
+import API_BASE from "./config/api.js";
+import { initNavbar } from "./navbar.js";
+
 
 // Protect dashboard: only NGOs allowed
 window.onload = () => {
@@ -10,12 +12,37 @@ window.onload = () => {
     window.location.href = "login.html";
     return;
   }
-};
 
-// LOGOUT
-document.getElementById("logoutBtn").onclick = () => {
-  localStorage.clear();
-  window.location.href = "index.html";
+  initNavbar();
+
+  // Wire up event listeners
+  const editProfileBtn = document.getElementById("editProfileBtn");
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener("click", () => {
+      window.location.href = "edit-profile.html";
+    });
+  }
+
+  const createCampaignBtn = document.getElementById("createCampaignBtn");
+  if (createCampaignBtn) {
+    createCampaignBtn.addEventListener("click", () => {
+      window.location.href = "create-fundraiser.html";
+    });
+  }
+
+  const myCampaignsBtn = document.getElementById("myCampaignsBtn");
+  if (myCampaignsBtn) {
+    myCampaignsBtn.addEventListener("click", () => {
+      loadMyFundraisers();
+    });
+  }
+
+  const connectMetaMaskBtn = document.getElementById("connectMetaMaskBtn");
+  if (connectMetaMaskBtn) {
+    connectMetaMaskBtn.addEventListener("click", () => {
+      connectMetaMask();
+    });
+  }
 };
 
 // Load My Fundraisers

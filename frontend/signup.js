@@ -1,4 +1,11 @@
-const API_BASE = window.API_BASE;
+import API_BASE from "./config/api.js";
+
+const signupSubmitBtn = document.getElementById("signupSubmitBtn");
+if (signupSubmitBtn) {
+  signupSubmitBtn.addEventListener("click", () => signupUser());
+}
+
+
 
 async function signupUser() {
   const name = document.getElementById("name").value.trim();

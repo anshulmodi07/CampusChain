@@ -1,6 +1,6 @@
 // Shared frontend configuration
-// WHY: Avoid hardcoding API base URLs in every JS file.
-// This keeps the app working both locally and in production.
+// NOTE: This file is kept for backward compatibility.
+// Prefer using the centralized API config at ./config/api.js.
 
 (function () {
   const isLocalHost =

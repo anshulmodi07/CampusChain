@@ -398,7 +398,7 @@
       <li><a href="index.html">Home</a></li>
       <li><a href="fundraiser.html">Campaigns</a></li>
       <li><a id="logoutBtn" href="#">Logout</a></li>
-      <li><button onclick="window.location.href='edit-profile.html'">Edit Profile</button></li>
+      <li><button id="editProfileBtn">Edit Profile</button></li>
     </ul>
   </nav>
 
@@ -426,15 +426,15 @@
 
     <!-- Action Buttons -->
     <div class="btn-bar">
-      <button class="btn" onclick="window.location.href='fundraiser.html'">
+      <button id="exploreCampaignsBtn" class="btn">
         🔍 Explore Campaigns
       </button>
 
-      <button class="btn" onclick="loadDonations()">
+      <button id="viewContributionsBtn" class="btn">
         📜 View My Contributions
       </button>
 
-      <button class="btn btn-secondary" onclick="connectMetaMask()">
+      <button id="connectMetaMaskBtn" class="btn btn-secondary">
         🦊 Connect MetaMask
       </button>
     </div>
@@ -454,7 +454,6 @@
 
   </div>
 
-<script src="config.js"></script>
-<script src="donor-dashboard.js"></script>
+<script type="module" src="donor-dashboard.js?v=2"></script>
 </body>
 </html>

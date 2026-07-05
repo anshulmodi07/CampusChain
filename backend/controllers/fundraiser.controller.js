@@ -8,7 +8,7 @@ export const getAllFundraisers = async (req, res) => {
       SELECT f.fundraiser_id AS fundraiserId, f.title, f.description, f.goal,
       f.owner_wallet AS ownerWallet, f.fundraiser_type AS fundraiserType,
       f.category, f.people_affected AS peopleAffected,
-      IFNULL(SUM(d.amount), 0) AS raised
+      IFNULL(SUM(CASE WHEN d.currency = 'INR' THEN d.amount / 300000.0 ELSE d.amount END), 0) AS raised
       FROM fundraisers f
       LEFT JOIN donations d ON f.fundraiser_id = d.fundraiser_id
       GROUP BY f.fundraiser_id
@@ -26,7 +26,7 @@ export const getAllFundraisers = async (req, res) => {
 export const getFundraiserById = async (req, res) => {
   try {
     const sql = `
-      SELECT f.*, IFNULL(SUM(d.amount), 0) AS raised
+      SELECT f.*, IFNULL(SUM(CASE WHEN d.currency = 'INR' THEN d.amount / 300000.0 ELSE d.amount END), 0) AS raised
       FROM fundraisers f
       LEFT JOIN donations d ON f.fundraiser_id = d.fundraiser_id
       WHERE f.fundraiser_id = ?
@@ -100,7 +100,7 @@ export const getMyFundraisers = async (req, res) => {
 export const getTotalRaised = async (req, res) => {
   try {
     const [rows] = await db.promise().query(
-      "SELECT COALESCE(SUM(amount),0) AS totalRaised FROM donations WHERE fundraiser_id = ?",
+      "SELECT COALESCE(SUM(CASE WHEN currency = 'INR' THEN amount / 300000.0 ELSE amount END), 0) AS totalRaised FROM donations WHERE fundraiser_id = ?",
       [req.params.id]
     );
 

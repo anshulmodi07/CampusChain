@@ -1,4 +1,6 @@
-const API_BASE = window.API_BASE;
+import API_BASE from "./config/api.js";
+import { initNavbar } from "./navbar.js";
+
 
 async function loadFundraisers() {
   const grid = document.getElementById("fundraisersGrid");
@@ -28,7 +30,8 @@ async function loadFundraisers() {
       const donateButton =
         (role === "ngo" && userWallet === ownerWallet)
           ? "" // NGO cannot donate to own fundraiser
-          : `<button class="donate-btn" onclick="handleDonate(${f.fundraiserId})">Donate</button>`;
+          : `<button class="donate-btn" data-fundraiser-id="${f.fundraiserId}">Donate</button>`;
+
 
       const card = `
         <div class="card">
@@ -45,8 +48,7 @@ async function loadFundraisers() {
           </div>
 
           <div class="buttons">
-            <button class="details-btn"
-              onclick="window.location.href='fundraiser-detail.html?id=${f.fundraiserId}'">
+            <button class="details-btn" data-fundraiser-id="${f.fundraiserId}">
               View Details
             </button>
             ${donateButton}
@@ -54,8 +56,11 @@ async function loadFundraisers() {
         </div>
       `;
 
+
       grid.innerHTML += card;
     });
+
+    wireFundraiserCardActions();
 
   } catch (err) {
     console.log(err);
@@ -63,4 +68,28 @@ async function loadFundraisers() {
   }
 }
 
-window.onload = loadFundraisers;
+function wireFundraiserCardActions() {
+  document.querySelectorAll('[data-fundraiser-id]').forEach((btn) => {
+    const id = btn.getAttribute('data-fundraiser-id');
+    if (!id) return;
+
+    if (btn.classList.contains('details-btn')) {
+      btn.addEventListener('click', () => {
+        window.location.href = `fundraiser-detail.html?id=${id}`;
+      });
+    }
+
+    if (btn.classList.contains('donate-btn')) {
+      btn.addEventListener('click', () => {
+        // Donation methods are handled on fundraiser-detail page.
+        // Keep existing navigation behavior via details page.
+        window.location.href = `fundraiser-detail.html?id=${id}`;
+      });
+    }
+  });
+}
+
+window.onload = () => {
+  initNavbar();
+  loadFundraisers();
+};
