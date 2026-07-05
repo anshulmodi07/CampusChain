@@ -119,15 +119,20 @@ async function donateEth() {
   const token = localStorage.getItem("token");
   if (!token) return alert("Please login to record your donation.");
 
+  const msgEl = document.getElementById("donationMsg");
   donateEthBtn.disabled = true;
   const originalText = donateEthBtn.innerText;
   donateEthBtn.innerText = "Processing MetaMask Payment...";
+  msgEl.className = "pending show";
+  msgEl.innerHTML = "Confirming MetaMask transaction... Please check your wallet.";
 
   try {
     const tx = await contract.methods.donate(fundraiserId).send({
       from: userAccount,
       value: web3.utils.toWei(amount.toString(), "ether"),
     });
+
+    msgEl.innerHTML = "Transaction confirmed on-chain! Registering donation record on backend...";
 
     const res = await fetch(`${API_BASE}/api/donate`, {
       method: "POST",
@@ -149,20 +154,21 @@ async function donateEth() {
       throw new Error(errData.message || "Failed to record donation on backend.");
     }
 
-    document.getElementById("donationMsg").innerHTML = `
+    msgEl.className = "success show";
+    msgEl.innerHTML = `
       Donation successful! 🚀 <br>
-      <a href="https://sepolia.etherscan.io/tx/${tx.transactionHash}" target="_blank">
+      <a href="https://sepolia.etherscan.io/tx/${tx.transactionHash}" target="_blank" style="color: #15803d; text-decoration: underline; font-weight: 700;">
         View on Etherscan
       </a>
     `;
-    document.getElementById("donationMsg").classList.add("show");
     amountInput.value = "";
 
     loadFundraiser();
     loadComments();
   } catch (err) {
     console.error("Donation error:", err);
-    alert(err.message || "Transaction failed or rejected.");
+    msgEl.className = "error show";
+    msgEl.innerHTML = `❌ Donation failed: ${err.message || "Transaction failed or rejected."}`;
   } finally {
     donateEthBtn.disabled = false;
     donateEthBtn.innerText = originalText;
@@ -203,6 +209,7 @@ async function donateRazorpay() {
   const amountInput = document.getElementById("inrAmount");
   const amount = amountInput.value.trim();
   const donateRazorpayBtn = document.getElementById("donateRazorpayBtn");
+  const msgEl = document.getElementById("donationMsg");
 
   const token = localStorage.getItem("token");
   if (!token) return alert("Please login to donate.");
@@ -212,6 +219,8 @@ async function donateRazorpay() {
   donateRazorpayBtn.disabled = true;
   const originalText = donateRazorpayBtn.innerText;
   donateRazorpayBtn.innerText = "Initializing Razorpay...";
+  msgEl.className = "pending show";
+  msgEl.innerHTML = "Loading payment SDK and initializing order transaction...";
 
   try {
     await loadRazorpayCheckoutSdk();
@@ -235,6 +244,7 @@ async function donateRazorpay() {
     // Re-enable button when modal opens so user can retry on dismiss
     donateRazorpayBtn.disabled = false;
     donateRazorpayBtn.innerText = originalText;
+    msgEl.innerHTML = "Checkout modal open. Please complete the payment steps.";
 
     const options = {
       key: order.key_id,
@@ -246,6 +256,8 @@ async function donateRazorpay() {
       handler: async function (response) {
         donateRazorpayBtn.disabled = true;
         donateRazorpayBtn.innerText = "Verifying payment...";
+        msgEl.className = "pending show";
+        msgEl.innerHTML = "Verifying payment signature with the backend...";
 
         try {
           const payload = {
@@ -270,18 +282,19 @@ async function donateRazorpay() {
             throw new Error(verifyErr.message || "Payment verification failed.");
           }
 
-          document.getElementById("donationMsg").innerHTML = `
+          msgEl.className = "success show";
+          msgEl.innerHTML = `
             Donation successful! 🚀 <br>
-            Payment ID: ${response.razorpay_payment_id}
+            Payment ID: <strong>${response.razorpay_payment_id}</strong>
           `;
-          document.getElementById("donationMsg").classList.add("show");
           amountInput.value = "";
 
           loadFundraiser();
           loadComments();
         } catch (e) {
           console.error("Razorpay verification failed:", e);
-          alert(e.message || "Payment verification failed.");
+          msgEl.className = "error show";
+          msgEl.innerHTML = `❌ Payment verification failed: ${e.message || "Verification server error."}`;
         } finally {
           donateRazorpayBtn.disabled = false;
           donateRazorpayBtn.innerText = originalText;
@@ -290,6 +303,8 @@ async function donateRazorpay() {
       modal: {
         ondismiss: function () {
           console.log("Razorpay popup dismissed");
+          msgEl.className = "error show";
+          msgEl.innerHTML = "❌ Payment cancelled or modal closed.";
           donateRazorpayBtn.disabled = false;
           donateRazorpayBtn.innerText = originalText;
         },
@@ -300,7 +315,8 @@ async function donateRazorpay() {
     rzp.open();
   } catch (err) {
     console.error("Razorpay donation error:", err);
-    alert(err.message || "Razorpay payment failed.");
+    msgEl.className = "error show";
+    msgEl.innerHTML = `❌ Razorpay payment failed: ${err.message || "Initialization error."}`;
     donateRazorpayBtn.disabled = false;
     donateRazorpayBtn.innerText = originalText;
   }

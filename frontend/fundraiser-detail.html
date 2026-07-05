@@ -297,20 +297,35 @@
     }
 
     #donationMsg {
-
-      color: #059669;
       margin-top: 15px;
       font-weight: 600;
       text-align: center;
       padding: 12px;
-      background: #dcfce7;
       border-radius: 8px;
+      border: 1px solid transparent;
       display: none;
     }
 
     #donationMsg.show {
-
       display: block;
+    }
+
+    #donationMsg.success {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+
+    #donationMsg.error {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    #donationMsg.pending {
+      background: #e0f2fe;
+      color: #0369a1;
+      border-color: #bae6fd;
     }
 
     /* Redesigned Donation Methods Layout */
@@ -549,6 +564,9 @@
       <!-- Method 2: Razorpay Fiat -->
       <div class="donation-card fiat">
         <h3>Donate using Razorpay</h3>
+        <div id="razorpayTestModeBanner" style="padding: 10px; background: #fffbeb; border: 1px solid #fef08a; border-radius: 8px; color: #854d0e; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          ⚠️ Test Mode Active (Use dummy credentials)
+        </div>
         <div style="height: 52px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #475569; background: #f1f5f9; border-radius: 8px; border: 1.5px dashed #cbd5e1; margin-bottom: 15px; font-size: 13px;">
           💳 Cards / UPI / NetBanking
         </div>

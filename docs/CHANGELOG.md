@@ -258,4 +258,27 @@ Commit
 
 fix: standardize timezone, timestamps, and add test login buttons
 
+---
+
+## Version 2.7
+
+Status
+
+Completed
+
+Summary
+
+- Added Test Mode warning banner inside Razorpay donation card.
+- Implemented CSS styles for success, error, and pending feedback states for `#donationMsg`.
+- Replaced intrusive alert popups with styled inline message cards.
+- Configured buttons to disable, show loading text, and clear input fields upon success.
+
+Detailed Engineering Report
+
+docs/releases/v2.7.md
+
+Commit
+
+fix: polish payment UX
+
 End of Changelog.
