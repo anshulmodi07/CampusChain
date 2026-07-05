@@ -78,10 +78,13 @@ export const donate = async (req, res) => {
 // -------- MY DONATIONS --------
 export const myDonations = async (req, res) => {
   try {
-    const [rows] = await db.promise().query(
-      "SELECT * FROM donations WHERE donor_address = ?",
-      [req.user.wallet]
-    );
+    const sql = `
+      SELECT d.*, f.title
+      FROM donations d
+      JOIN fundraisers f ON d.fundraiser_id = f.fundraiser_id
+      WHERE d.donor_address = ?
+    `;
+    const [rows] = await db.promise().query(sql, [req.user.wallet]);
 
     res.json(rows);
   } catch (err) {

@@ -74,9 +74,11 @@ async function loadMyFundraisers() {
     container.innerHTML = "";
 
     fundraisers.forEach(f => {
-      const raised = f.raised || 0;
-      const goal = f.goal;
-      const percent = Math.min((raised / goal) * 100, 100);
+      const raised = parseFloat(f.raised || 0);
+      const goal = parseFloat(f.goal || 0);
+      const raisedInr = raised * 300000;
+      const goalInr = goal * 300000;
+      const percent = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
 
       container.innerHTML += `
         <div class="fundraiser-card">
@@ -86,7 +88,8 @@ async function loadMyFundraisers() {
           <div class="fundraiser-info">
             <div class="info-item"><strong>Category</strong><span>${f.category}</span></div>
             <div class="info-item"><strong>People</strong><span>${f.peopleAffected}</span></div>
-            <div class="info-item"><strong>Goal</strong><span>₹${goal}</span></div>
+            <div class="info-item"><strong>Raised</strong><span>${raised.toFixed(4)} ETH<br><small style="color: #64748b;">(~₹${raisedInr.toLocaleString('en-IN')})</small></span></div>
+            <div class="info-item"><strong>Goal</strong><span>${goal.toFixed(4)} ETH<br><small style="color: #64748b;">(~₹${goalInr.toLocaleString('en-IN')})</small></span></div>
           </div>
 
           <div class="progress-bar">

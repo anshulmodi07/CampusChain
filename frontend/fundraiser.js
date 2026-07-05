@@ -22,8 +22,10 @@ async function loadFundraisers() {
         ? f.description.substring(0, 100) + "..."
         : f.description;
 
-      const raised = f.raised || 0;
-      const goal = f.goal;
+      const raised = parseFloat(f.raised || 0);
+      const goal = parseFloat(f.goal);
+      const raisedInr = raised * 300000;
+      const goalInr = goal * 300000;
 
       const progressPercent = Math.min((raised / goal) * 100, 100);
 
@@ -41,7 +43,7 @@ async function loadFundraisers() {
           <p><strong>Category:</strong> ${f.category}</p>
           <p><strong>People Affected:</strong> ${f.peopleAffected}</p>
 
-       <p><strong>Raised:</strong> ${raised} ETH / ${goal} ETH</p>
+       <p><strong>Raised:</strong> ${raised.toFixed(4)} ETH (~₹${raisedInr.toLocaleString('en-IN')}) / ${goal.toFixed(4)} ETH (~₹${goalInr.toLocaleString('en-IN')})</p>
 
           <div class="progress-bar">
             <div class="progress-fill" style="width:${progressPercent}%"></div>

@@ -98,13 +98,19 @@ async function loadDonations() {
       return;
     }
 
-    // 👉 Stats (only two now)
-    let totalAmount = 0;
+    // 👉 Stats (calculate ETH and INR separately)
+    let totalEth = 0;
+    let totalInr = 0;
     donations.forEach(d => {
-      totalAmount += parseFloat(d.amount || 0);
+      const amt = parseFloat(d.amount || 0);
+      if (d.currency === "INR") {
+        totalInr += amt;
+      } else {
+        totalEth += amt;
+      }
     });
 
-    updateStats(totalAmount, donations.length);
+    updateStats(totalEth, totalInr, donations.length);
 
     // 👉 Display cards
     container.innerHTML = "";
@@ -112,13 +118,19 @@ async function loadDonations() {
     donations.forEach(d => {
       const card = document.createElement('div');
       card.className = 'card';
+      
+      const currency = d.currency || "ETH";
+      const displayAmount = currency === "INR"
+        ? `₹${parseFloat(d.amount).toLocaleString('en-IN')} INR`
+        : `${parseFloat(d.amount).toFixed(4)} ETH <small style="color: #64748b; font-size: 13px; display: block;">(~₹${(parseFloat(d.amount) * 300000).toLocaleString('en-IN')} INR)</small>`;
+
       card.innerHTML = `
         <h3>${d.title || 'Untitled Campaign'}</h3>
 
         <div class="card-info">
           <div class="info-item">
             <span class="info-label">Amount</span>
-            <span class="info-value">₹${parseFloat(d.amount).toLocaleString()}</span>
+            <span class="info-value">${displayAmount}</span>
           </div>
 
           <div class="info-item">
@@ -157,10 +169,10 @@ async function loadDonations() {
 }
 
 // =============================
-// 📌 Update Stats (Only 2)
+// 📌 Update Stats
 // =============================
-function updateStats(totalAmount, count) {
-  document.getElementById('totalDonated').textContent = `₹${totalAmount.toLocaleString()}`;
+function updateStats(totalEth, totalInr, count) {
+  document.getElementById('totalDonated').innerHTML = `${totalEth.toFixed(4)} ETH <span style="font-size: 16px; font-weight: normal; color: #64748b; display: block; margin-top: 5px;">+ ₹${totalInr.toLocaleString('en-IN')} INR</span>`;
   document.getElementById('donationCount').textContent = count;
 }
 

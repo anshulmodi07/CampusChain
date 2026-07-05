@@ -1,11 +1,215 @@
-# Changelog
+# CampusChain Changelog
 
-All notable changes to the CampusChain project will be documented in this file.
+> This document records every completed version of CampusChain.
 
-## [Unreleased]
+Unlike git commits, this explains **why** changes were made, not only **what** changed.
 
-### Fixed
-- **Database Connection Reset (`ECONNRESET`) in Razorpay Checkout**:
-  - **Issue**: Under production-like loads or idle periods, the database socket connection would be terminated by the AWS/TiDB cloud infrastructure (NAT Gateway / Network Load Balancer idle timeouts occur after 350 seconds). The database connection pool (`mysql2`) was unaware of the termination and tried to reuse the stale socket, throwing `read ECONNRESET` when executing the first query (`SELECT donation_id FROM donations...`) inside `verifyPayment`.
-  - **Trace Results**: Verified that when the socket is closed, the tracer logs execute up to `[TRACER] 2. Signature verified`, but fail at the `SELECT` query before executing `[TRACER] 3. recordDonation entered` (making it the first log that never executes).
-  - **Resolution**: Configured the database connection pool in [index.js](file:///d:/CampusChain/backend/db/index.js) with TCP keep-alive settings (`enableKeepAlive: true` and `keepAliveInitialDelay: 10000`) and idle connection timeouts (`idleTimeout: 60000` and `maxIdle: 10`). This ensures TCP keep-alive packets prevent the NAT Gateway from reaping idle connections, and stale connections are automatically re-established by the pool.
+Every completed version must append a new entry.
+
+Never overwrite previous versions.
+
+---
+
+# Changelog Template
+
+---
+
+## Version X.Y
+
+### Status
+
+Completed
+
+### Date
+
+YYYY-MM-DD
+
+### Objective
+
+Describe the goal of this version.
+
+---
+
+## Problems Identified
+
+List every issue discovered before implementation.
+
+Example
+
+- Incorrect ETH/INR display
+- Dashboard totals inconsistent
+- Manual refresh required
+
+---
+
+## Root Cause Analysis
+
+Explain why the issue existed.
+
+Do not simply describe the bug.
+
+Explain the architectural reason.
+
+---
+
+## Solution
+
+Describe how the issue was solved.
+
+Focus on design decisions.
+
+---
+
+## Files Modified
+
+Frontend
+
+-
+
+-
+
+Backend
+
+-
+
+-
+
+Database
+
+-
+
+Documentation
+
+-
+
+---
+
+## Database Changes
+
+List migrations.
+
+Explain why they were necessary.
+
+If none
+
+Write
+
+No database changes.
+
+---
+
+## API Changes
+
+List modified endpoints.
+
+Request changes.
+
+Response changes.
+
+Compatibility impact.
+
+---
+
+## Architecture Impact
+
+Explain whether architecture changed.
+
+If yes
+
+Describe it.
+
+If no
+
+Write
+
+Architecture unchanged.
+
+---
+
+## Testing Performed
+
+List everything tested.
+
+Example
+
+✔ MetaMask donation
+
+✔ Razorpay donation
+
+✔ Dashboard
+
+✔ Comments
+
+✔ Login
+
+✔ Signup
+
+✔ AWS Deployment
+
+---
+
+## Regression Testing
+
+Verify existing features.
+
+Authentication
+
+Fundraisers
+
+Comments
+
+Payments
+
+Deployment
+
+Profiles
+
+Dashboards
+
+---
+
+## Result
+
+Summarize the completed version.
+
+---
+
+## Remaining TODO
+
+List work intentionally deferred to the next version.
+
+---
+
+## Commit
+
+Record the commit message.
+
+Example
+
+feat: improve hybrid payment consistency
+
+---
+
+# Current Versions
+
+## Version 2.4
+
+Status
+
+Completed
+
+Summary
+
+- Fixed hybrid payment consistency.
+- Standardized currency handling.
+- Updated dashboard totals.
+
+Detailed Engineering Report
+
+docs/releases/v2.4.md
+
+Commit
+
+fix: standardize hybrid payment handling
+
+End of Changelog.

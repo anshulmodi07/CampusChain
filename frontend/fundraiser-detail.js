@@ -24,11 +24,16 @@ async function loadFundraiser() {
 
     const raisedAmount = await loadRaisedAmount();
 
-    document.getElementById("raised").innerText = formatAmount(raisedAmount);
-    document.getElementById("goal").innerText = formatAmount(data.goal);
+    const raisedEth = parseFloat(raisedAmount || 0);
+    const goalEth = parseFloat(data.goal || 0);
+    const raisedInr = raisedEth * 300000;
+    const goalInr = goalEth * 300000;
 
-    const percentage = data.goal > 0 ? (raisedAmount / data.goal) * 100 : 0;
-    document.getElementById("progressFill").style.width = percentage + "%";
+    document.getElementById("raised").innerHTML = `${raisedEth.toFixed(4)} ETH <span style="font-size: 14px; opacity: 0.85;">(~₹${raisedInr.toLocaleString('en-IN')})</span>`;
+    document.getElementById("goal").innerHTML = `${goalEth.toFixed(4)} ETH <span style="font-size: 14px; opacity: 0.85;">(~₹${goalInr.toLocaleString('en-IN')})</span>`;
+
+    const percentage = goalEth > 0 ? (raisedEth / goalEth) * 100 : 0;
+    document.getElementById("progressFill").style.width = Math.min(percentage, 100) + "%";
   } catch (err) {
     console.error("Error loading fundraiser:", err);
   }
