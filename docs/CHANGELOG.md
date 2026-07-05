@@ -212,4 +212,26 @@ Commit
 
 fix: standardize hybrid payment handling
 
+---
+
+## Version 2.5
+
+Status
+
+Completed
+
+Summary
+
+- Auto-load campaigns list on NGO Dashboard window load.
+- Auto-load contributions list and stats on Donor Dashboard window load.
+- Refresh comments alongside campaign metrics on donation success.
+
+Detailed Engineering Report
+
+docs/releases/v2.5.md
+
+Commit
+
+feat: automate dashboard refresh workflow
+
 End of Changelog.

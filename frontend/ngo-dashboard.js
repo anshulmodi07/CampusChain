@@ -14,6 +14,7 @@ window.onload = () => {
   }
 
   initNavbar();
+  loadMyFundraisers();
 
   // Wire up event listeners
   const editProfileBtn = document.getElementById("editProfileBtn");

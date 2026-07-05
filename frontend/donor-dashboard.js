@@ -16,6 +16,7 @@ window.onload = () => {
   }
 
   initNavbar();
+  loadDonations();
 
   // If wallet already connected earlier
   const wallet = localStorage.getItem("wallet");

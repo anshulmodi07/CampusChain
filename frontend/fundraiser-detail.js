@@ -158,6 +158,7 @@ async function donateEth() {
     amountInput.value = "";
 
     loadFundraiser();
+    loadComments();
   } catch (err) {
     console.error("Donation error:", err);
     alert(err.message || "Transaction failed or rejected.");
@@ -276,6 +277,7 @@ async function donateRazorpay() {
           amountInput.value = "";
 
           loadFundraiser();
+          loadComments();
         } catch (e) {
           console.error("Razorpay verification failed:", e);
           alert(e.message || "Payment verification failed.");
