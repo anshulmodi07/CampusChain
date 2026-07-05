@@ -11,11 +11,12 @@ export const addComment = async (req, res) => {
   }
 
   try {
+    const createdAt = new Date();
     await db.promise().query(
       `INSERT INTO comments 
-       (fundraiser_id, user_id, comment_text, created_at)
-       VALUES (?, ?, ?, NOW())`,
-      [fundraiser_id, user_id, comment_text]
+       (fundraiser_id, user_id, comment_text, commented_at)
+       VALUES (?, ?, ?, ?)`,
+      [fundraiser_id, user_id, comment_text, createdAt]
     );
 
     res.json({ message: "Comment added" });
@@ -32,11 +33,11 @@ export const getComments = async (req, res) => {
 
   try {
     const [rows] = await db.promise().query(
-      `SELECT users.name, comments.comment_text, comments.created_at
+      `SELECT users.name, comments.comment_text, comments.commented_at AS created_at
        FROM comments
        JOIN users ON comments.user_id = users.id
        WHERE fundraiser_id = ?
-       ORDER BY created_at DESC`,
+       ORDER BY commented_at DESC`,
       [fundraiserId]
     );
 

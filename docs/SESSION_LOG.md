@@ -128,5 +128,48 @@
 ### Current Status
 - 🟢 Completed. Version 2.5 features are fully verified and ready.
 
-### Next Recommended Task
 - Version 2.6: Timestamp Standardization (Standardizing timezone configurations, formatters, and payment log dates).
+
+---
+
+## Session: 2026-07-06 (Version 2.6 Implementation)
+
+### Current Version
+- Version 2.6 (Timestamp Standardization)
+
+### Objective
+- Standardize timezones and timestamps on database pool connections, query operations, and frontend visual listings.
+
+### Problems Found
+- 1-second clock drifts between backend Javascript memory generation (`new Date()`) and MySQL query compilation (`NOW()`), leading to potential blockchain anchoring verification mismatches.
+- Node MySQL driver parses timestamps using the server local timezone (drifting between local runtimes and UTC EC2 deployment environments).
+- Comments listing returns database error 500 because the query references `comments.created_at` which is actually named `comments.commented_at` in the TiDB schema.
+
+### Root Causes
+- Discrepancy between application runtime time and database local clock.
+- Schema column drift from legacy table revisions.
+
+### Files Modified
+- **Backend Source Files**:
+  - `backend/db/index.js`
+  - `backend/services/donation.service.js`
+  - `backend/controllers/comment.controller.js`
+- **Frontend Source Files**:
+  - `frontend/utils/date.js` [NEW]
+  - `frontend/donor-dashboard.js`
+  - `frontend/fundraiser-detail.js`
+- **Release Documentation**:
+  - `docs/releases/v2.6.md`
+
+### Testing Performed
+- Logged in as Donor via automated browser subagents. Checked that both contribution logs and detail comment feeds load and format dates consistently in `Asia/Kolkata` time zone (IST) using the standard `D MMM YYYY, hh:mm am/pm` template. Posted comments verified immediately without errors.
+
+### Documentation Updated
+- `docs/releases/v2.6.md`
+- `docs/SESSION_LOG.md`
+
+### Current Status
+- 🟢 Completed. Version 2.6 features are fully verified and ready.
+
+### Next Recommended Task
+- Version 2.7: Production UX Polish (Adding transaction pending/success overlays, disabling buttons, and clearing transaction values on completion).

@@ -19,10 +19,15 @@ export const recordDonation = async ({
 
   // WHY: Insert the payment metadata as well so Razorpay and MetaMask can share the same DB recording layer.
   // This uses the existing columns in the `donations` table.
+  // WHY: Generate donatedAt in Javascript to ensure exact matching between DB and blockchain hash.
+  const donatedAt = new Date();
+
+  // WHY: Insert the payment metadata as well so Razorpay and MetaMask can share the same DB recording layer.
+  // This uses the existing columns in the `donations` table.
   const sql = `
       INSERT INTO donations 
       (fundraiser_id, donor_address, amount, tx_hash, payment_method, payment_reference, currency, donated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
   const [result] = await db.promise().query(sql, [
@@ -33,11 +38,8 @@ export const recordDonation = async ({
     payment_method,
     payment_reference,
     currency || "ETH",
+    donatedAt,
   ]);
-
-  // WHY: Return donatedAt so controllers can deterministically compute the anchored hash
-  // without querying immediately after INSERT.
-  const donatedAt = new Date();
 
   return { donationId: result.insertId, donatedAt };
 };

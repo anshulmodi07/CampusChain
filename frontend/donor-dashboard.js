@@ -3,6 +3,7 @@
 // =============================
 import API_BASE from "./config/api.js";
 import { initNavbar } from "./navbar.js";
+import { formatTimestamp } from "./utils/date.js";
 
 
 window.onload = () => {
@@ -137,13 +138,7 @@ async function loadDonations() {
           <div class="info-item">
             <span class="info-label">Date</span>
             <span class="info-value">
-              ${new Date(d.donated_at).toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
+              ${formatTimestamp(d.donated_at)}
             </span>
           </div>
 

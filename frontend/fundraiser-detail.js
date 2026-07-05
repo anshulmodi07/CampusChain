@@ -1,5 +1,6 @@
 import API_BASE from "./config/api.js";
 import { initNavbar } from "./navbar.js";
+import { formatTimestamp } from "./utils/date.js";
 
 // ------- Get fundraiser ID from URL -------
 const urlParams = new URLSearchParams(window.location.search);
@@ -68,7 +69,7 @@ async function loadComments() {
   comments.forEach((c) => {
     const div = document.createElement("div");
     div.innerHTML = `<strong>${c.name}</strong>: ${c.comment_text} <br>
-    <small>${new Date(c.created_at).toLocaleString()}</small>
+    <small>${formatTimestamp(c.created_at)}</small>
     <hr>`;
     commentsList.appendChild(div);
   });

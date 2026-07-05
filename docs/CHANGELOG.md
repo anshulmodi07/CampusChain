@@ -234,4 +234,27 @@ Commit
 
 feat: automate dashboard refresh workflow
 
+---
+
+## Version 2.6
+
+Status
+
+Completed
+
+Summary
+
+- Configured database connection pool to parse dates in UTC (`timezone: 'Z'`).
+- Parameterized write timestamps using JavaScript Date objects to prevent clock drifts.
+- Standardized comment controller queries to target `commented_at` and alias to `created_at`.
+- Created frontend `formatTimestamp` helper standardizing display timezone to `Asia/Kolkata`.
+
+Detailed Engineering Report
+
+docs/releases/v2.6.md
+
+Commit
+
+fix: standardize timezone and timestamps
+
 End of Changelog.
