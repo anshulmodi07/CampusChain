@@ -281,4 +281,25 @@ Commit
 
 fix: polish payment UX
 
+---
+
+## Version 2.8
+
+Status
+
+Completed
+
+Summary
+
+- Completed complete QA testing checklists across authentication, fundraisers, comments, payments, dashboards, and configurations.
+- Froze all CampusChain Version 2 development milestones.
+
+Detailed Engineering Report
+
+docs/releases/v2.8.md
+
+Commit
+
+test: complete production QA
+
 End of Changelog.
