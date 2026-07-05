@@ -17,6 +17,24 @@ if (loginSubmitBtn) {
   loginSubmitBtn.addEventListener("click", () => loginUser());
 }
 
+const testDonorBtn = document.getElementById("testDonorBtn");
+if (testDonorBtn) {
+  testDonorBtn.addEventListener("click", () => {
+    document.getElementById("email").value = "donor@gmail.com";
+    document.getElementById("password").value = "123";
+    loginUser();
+  });
+}
+
+const testNgoBtn = document.getElementById("testNgoBtn");
+if (testNgoBtn) {
+  testNgoBtn.addEventListener("click", () => {
+    document.getElementById("email").value = "ngo@gmail.com";
+    document.getElementById("password").value = "123";
+    loginUser();
+  });
+}
+
 async function loginUser() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();

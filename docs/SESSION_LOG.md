@@ -158,11 +158,14 @@
   - `frontend/utils/date.js` [NEW]
   - `frontend/donor-dashboard.js`
   - `frontend/fundraiser-detail.js`
+  - `frontend/login.html`
+  - `frontend/login.js`
 - **Release Documentation**:
   - `docs/releases/v2.6.md`
 
 ### Testing Performed
 - Logged in as Donor via automated browser subagents. Checked that both contribution logs and detail comment feeds load and format dates consistently in `Asia/Kolkata` time zone (IST) using the standard `D MMM YYYY, hh:mm am/pm` template. Posted comments verified immediately without errors.
+- Verified that "Login as Test Donor" and "Login as Test NGO" buttons correctly autofill credentials and redirect automatically.
 
 ### Documentation Updated
 - `docs/releases/v2.6.md`
