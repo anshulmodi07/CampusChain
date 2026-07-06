@@ -48,15 +48,15 @@ main
 
 Current Version
 
-Version 2.8 Part 3
+Version 2.8 Part 4
 
 Status
 
-🟢 Completed
+🟡 In Progress
 
 Current Goal
 
-Freeze CampusChain Version 2.
+Final Roadmap Overhaul (NGO comment deletion, goal badges, watchlist, filters, close triggers, profile auto-population, and wallet database linking).
 
 ---
 
@@ -529,6 +529,44 @@ All NGO-scoped wallet connection updates and redirections are verified.
 Commit
 
 fix: ngo dashboard wallet load and metamask download redirects
+
+---
+
+# Version 2.8 Part 4
+
+Title
+
+Final Roadmap Overhaul
+
+Status
+
+🟡 In Progress
+
+Objective
+
+Implement all requested user polish features including profile database wallet linking, NGO comment deletion, goal achievement badges, watchlists, search filters, and campaign close controls.
+
+Tasks
+
+☐ Build API endpoints for profile queries, campaign close/edit description, comment delete, and fundraiser donations
+
+☐ Set up client side edit-profile.html to auto-populate and permanently link MetaMask wallet to database
+
+☐ Set up campaign details view to hide payment boxes for NGOs and render contributors lists + comment delete options
+
+☐ Set up search bars and categories browse filtering + hide private campaigns on fundraiser.html
+
+☐ Set up Close/Edit controls on ngo-dashboard.html and favorites watchlist panels on donor-dashboard.html
+
+☐ Display Sepolia verify proof receipts on donor dashboard for blockchain anchored checkouts
+
+Exit Criteria
+
+All final roadmap features are verified via local browser runs.
+
+Commit
+
+feat: complete production QA overhaul for v2.0.0
 
 ---
 

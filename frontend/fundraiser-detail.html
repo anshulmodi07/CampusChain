@@ -518,7 +518,10 @@
   </nav>
 
   <div class="container">
-    <h1 id="title">Loading...</h1>
+    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+      <h1 id="title" style="margin-bottom: 0;">Loading...</h1>
+      <span id="goalAchievedBadge" style="display: none; background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid #bbf7d0;">Goal Achieved! 🎉</span>
+    </div>
     <p id="description"></p>
 
     <div class="info-grid">
@@ -544,45 +547,57 @@
   </div>
 
   <div class="donation-box">
-    <h2>Support This Campaign</h2>
-    
-    <div class="donation-methods">
-      <!-- Method 1: MetaMask Crypto -->
-      <div class="donation-card crypto">
-        <h3>Donate using Ethereum</h3>
-        <p id="walletStatus">🦊 Wallet not connected</p>
-        <button id="connectMetaMaskBtn" class="btn-connect" type="button">Connect MetaMask Wallet</button>
-        
-        <div class="input-group" style="margin-top: 15px;">
-          <label for="ethAmount">ETH Amount</label>
-          <input type="number" id="ethAmount" placeholder="Amount in ETH (e.g. 0.05)" step="0.0001" min="0">
-        </div>
-        
-        <button id="donateEthBtn" class="btn-pay" type="button">🦊 Pay with MetaMask</button>
-      </div>
-
-      <!-- Method 2: Razorpay Fiat -->
-      <div class="donation-card fiat">
-        <h3>Donate using Razorpay</h3>
-        <div id="razorpayTestModeBanner" style="padding: 10px; background: #fffbeb; border: 1px solid #fef08a; border-radius: 8px; color: #854d0e; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
-          ⚠️ Test Mode Active (Use dummy credentials)
-        </div>
-        <div style="height: 52px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #475569; background: #f1f5f9; border-radius: 8px; border: 1.5px dashed #cbd5e1; margin-bottom: 15px; font-size: 13px;">
-          💳 Cards / UPI / NetBanking
-        </div>
-        
-        <div class="input-group" style="margin-top: 15px;">
-          <label for="inrAmount">Amount (INR ₹)</label>
-          <input type="number" id="inrAmount" placeholder="Amount in INR (e.g. 500)" step="1" min="1">
-        </div>
-        
-        <button id="donateRazorpayBtn" class="btn-pay" type="button">💳 Pay with Razorpay</button>
-      </div>
+    <div id="closedCampaignBanner" style="display: none; padding: 20px; background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 12px; color: #be123c; font-weight: 700; text-align: center; font-size: 16px; margin-bottom: 25px;">
+      🔒 This campaign has been closed by the organizer. Further donations are disabled.
     </div>
 
-    <p id="donationMsg"></p>
+    <div id="paymentContainer">
+      <h2>Support This Campaign</h2>
+      
+      <div class="donation-methods">
+        <!-- Method 1: MetaMask Crypto -->
+        <div class="donation-card crypto">
+          <h3>Donate using Ethereum</h3>
+          <p id="walletStatus">🦊 Wallet not connected</p>
+          <button id="connectMetaMaskBtn" class="btn-connect" type="button">Connect MetaMask Wallet</button>
+          
+          <div class="input-group" style="margin-top: 15px;">
+            <label for="ethAmount">ETH Amount</label>
+            <input type="number" id="ethAmount" placeholder="Amount in ETH (e.g. 0.05)" step="0.0001" min="0">
+          </div>
+          
+          <button id="donateEthBtn" class="btn-pay" type="button">🦊 Pay with MetaMask</button>
+        </div>
 
+        <!-- Method 2: Razorpay Fiat -->
+        <div class="donation-card fiat">
+          <h3>Donate using Razorpay</h3>
+          <div id="razorpayTestModeBanner" style="padding: 10px; background: #fffbeb; border: 1px solid #fef08a; border-radius: 8px; color: #854d0e; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            ⚠️ Test Mode Active (Use dummy credentials)
+          </div>
+          <div style="height: 52px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #475569; background: #f1f5f9; border-radius: 8px; border: 1.5px dashed #cbd5e1; margin-bottom: 15px; font-size: 13px;">
+            💳 Cards / UPI / NetBanking
+          </div>
+          
+          <div class="input-group" style="margin-top: 15px;">
+            <label for="inrAmount">Amount (INR ₹)</label>
+            <input type="number" id="inrAmount" placeholder="Amount in INR (e.g. 500)" step="1" min="1">
+          </div>
+          
+          <button id="donateRazorpayBtn" class="btn-pay" type="button">💳 Pay with Razorpay</button>
+        </div>
+      </div>
 
+      <p id="donationMsg"></p>
+    </div>
+
+    <!-- Contributors Section -->
+    <div class="contributors-section" id="contributorsSection" style="display: none; margin-bottom: 30px;">
+      <h2>Contributors</h2>
+      <div id="contributorsList" style="background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+        <p style="color: #64748b; text-align: center; padding: 10px; margin: 0;">No contributions recorded yet.</p>
+      </div>
+    </div>
 
     <div class="comments-section">
       <h2>Leave a Message</h2>

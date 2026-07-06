@@ -261,6 +261,15 @@
         grid-template-columns: 1fr;
       }
     }
+    .filter-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+    .filter-btn:hover:not(.active) {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
   </style>
 </head>
 
@@ -282,6 +291,19 @@
   <div class="container">
     <h1>Campus Campaigns</h1>
     <p>Explore active student initiatives and support campus causes.</p>
+
+    <!-- Search and Filter Panel -->
+    <div class="search-filter-section" style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;">
+      <input type="text" id="searchInput" placeholder="🔍 Search campaigns by title or description..." style="width: 100%; padding: 12px 20px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 15px; outline: none; transition: border-color 0.2s;" />
+      
+      <div class="category-filters" id="categoryFilters" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="filter-btn active" data-category="all" style="padding: 8px 16px; border-radius: 20px; border: 1.5px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s;">All</button>
+        <button class="filter-btn" data-category="Education" style="padding: 8px 16px; border-radius: 20px; border: 1.5px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s;">Education</button>
+        <button class="filter-btn" data-category="Healthcare" style="padding: 8px 16px; border-radius: 20px; border: 1.5px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s;">Healthcare</button>
+        <button class="filter-btn" data-category="Clubs" style="padding: 8px 16px; border-radius: 20px; border: 1.5px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s;">Student Clubs</button>
+        <button class="filter-btn" data-category="Other" style="padding: 8px 16px; border-radius: 20px; border: 1.5px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s;">Other</button>
+      </div>
+    </div>
 
     <div class="grid" id="fundraisersGrid"></div>
   </div>

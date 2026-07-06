@@ -11,7 +11,9 @@ import {
   getFundraiserById,
   createFundraiser,
   getMyFundraisers,
-  getTotalRaised
+  getTotalRaised,
+  updateFundraiserStatus,
+  updateFundraiserDescription
 } from "../controllers/fundraiser.controller.js";
 import { verifyToken, requireRole } from "../middlewares/auth.middleware.js";
 
@@ -22,5 +24,7 @@ router.get("/api/fundraiser/:id", getFundraiserById);
 router.get("/api/raised/:id", getTotalRaised);
 router.get("/api/my-fundraisers", verifyToken, requireRole("ngo"), getMyFundraisers);
 router.post("/api/fundraiser/create", verifyToken, requireRole("ngo"), createFundraiser);
+router.put("/api/fundraiser/:id/status", verifyToken, requireRole("ngo"), updateFundraiserStatus);
+router.put("/api/fundraiser/:id/description", verifyToken, requireRole("ngo"), updateFundraiserDescription);
 
 export default router;

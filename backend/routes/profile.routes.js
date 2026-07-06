@@ -6,11 +6,12 @@
 
 
 import express from "express";
-import { updateProfile } from "../controllers/profile.controller.js";
+import { updateProfile, getProfile } from "../controllers/profile.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
+router.get("/api/profile", verifyToken, getProfile);
 router.put("/api/profile/update", verifyToken, updateProfile);
 
 export default router;

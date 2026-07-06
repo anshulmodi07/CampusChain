@@ -13,6 +13,8 @@ function formatAmount(value) {
 }
 
 // ------- Load Fundraiser Full Details -------
+let isCampaignOwner = false;
+
 async function loadFundraiser() {
   try {
     const res = await fetch(`${API_BASE}/api/fundraiser/${fundraiserId}`);
@@ -35,6 +37,40 @@ async function loadFundraiser() {
 
     const percentage = goalEth > 0 ? (raisedEth / goalEth) * 100 : 0;
     document.getElementById("progressFill").style.width = Math.min(percentage, 100) + "%";
+
+    // 🏆 Goal Achieved Badge check
+    if (raisedEth >= goalEth) {
+      const badge = document.getElementById("goalAchievedBadge");
+      if (badge) badge.style.display = "inline-flex";
+    }
+
+    // 🔒 Campaign Status check
+    const isClosed = data.status === "closed";
+    if (isClosed) {
+      const banner = document.getElementById("closedCampaignBanner");
+      if (banner) banner.style.display = "block";
+      const payContainer = document.getElementById("paymentContainer");
+      if (payContainer) payContainer.style.display = "none";
+    }
+
+    // 🚦 Role & Owner check
+    const role = localStorage.getItem("role");
+    const userWallet = localStorage.getItem("wallet");
+    
+    // Hide payment container for any NGO account
+    if (role === "ngo") {
+      const payContainer = document.getElementById("paymentContainer");
+      if (payContainer) payContainer.style.display = "none";
+      
+      // If NGO owns the campaign, enable Contributors and delete Comment capabilities
+      if (userWallet && userWallet.toLowerCase() === data.ownerWallet.toLowerCase()) {
+        isCampaignOwner = true;
+        const contribSec = document.getElementById("contributorsSection");
+        if (contribSec) contribSec.style.display = "block";
+        loadContributors();
+        loadComments(); // reload to show delete button
+      }
+    }
   } catch (err) {
     console.error("Error loading fundraiser:", err);
   }
@@ -56,7 +92,6 @@ async function loadComments() {
   const res = await fetch(`${API_BASE}/api/comments/${fundraiserId}`);
   const data = await res.json();
 
-  // Backend may return either an array or { comments: [...] }
   const comments = Array.isArray(data)
     ? data
     : Array.isArray(data?.comments)
@@ -68,11 +103,87 @@ async function loadComments() {
 
   comments.forEach((c) => {
     const div = document.createElement("div");
-    div.innerHTML = `<strong>${c.name}</strong>: ${c.comment_text} <br>
+    
+    // Add delete button only if logged in user is the owner NGO of this campaign
+    const deleteBtn = isCampaignOwner
+      ? `<button class="delete-comment-btn" data-comment-id="${c.comment_id}" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 13px; font-weight: 600; padding: 0; margin-left: 15px;">🗑️ Delete</button>`
+      : "";
+
+    div.innerHTML = `<strong>${c.name}</strong>: ${c.comment_text} ${deleteBtn} <br>
     <small>${formatTimestamp(c.created_at)}</small>
     <hr>`;
     commentsList.appendChild(div);
   });
+
+  // Wire delete comment buttons
+  document.querySelectorAll(".delete-comment-btn").forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      const commentId = e.target.getAttribute("data-comment-id");
+      if (confirm("Are you sure you want to delete this comment?")) {
+        const token = localStorage.getItem("token");
+        try {
+          const res = await fetch(`${API_BASE}/api/comments/${commentId}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          if (res.ok) {
+            loadComments();
+          } else {
+            const errData = await res.json();
+            alert("Failed to delete comment: " + errData.message);
+          }
+        } catch (err) {
+          console.error("Error deleting comment:", err);
+        }
+      }
+    });
+  });
+}
+
+async function loadContributors() {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${API_BASE}/api/fundraiser/${fundraiserId}/donations`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!res.ok) throw new Error("Failed to fetch contributors");
+    const donations = await res.json();
+    const listEl = document.getElementById("contributorsList");
+    if (donations.length === 0) {
+      listEl.innerHTML = '<p style="color: #64748b; text-align: center; padding: 10px; margin: 0;">No contributions recorded yet.</p>';
+      return;
+    }
+    listEl.innerHTML = "";
+    donations.forEach(d => {
+      const name = d.donor_name || "Anonymous Contributor";
+      const currency = d.currency || "ETH";
+      const amount = parseFloat(d.amount);
+      const amountStr = currency === "INR" 
+        ? `₹${amount.toLocaleString('en-IN')} INR` 
+        : `${amount.toFixed(4)} ETH`;
+      
+      const div = document.createElement("div");
+      div.style.padding = "10px 0";
+      div.style.borderBottom = "1px solid #f1f5f9";
+      div.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong>${name}</strong>
+          <span style="font-weight: 700; color: #0f172a;">${amountStr}</span>
+        </div>
+        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+          <span>Date: ${formatTimestamp(d.donated_at)}</span>
+          ${d.tx_hash ? `<br><span>Tx Hash: <span style="font-family: monospace; font-size: 11px; word-break: break-all;">${d.tx_hash}</span></span>` : ""}
+        </div>
+      `;
+      listEl.appendChild(div);
+    });
+  } catch (err) {
+    console.error("Error loading contributors:", err);
+  }
 }
 
 // ===================== Donation - MetaMask =====================
@@ -358,15 +469,6 @@ if (donateRazorpayBtn) donateRazorpayBtn.addEventListener("click", () => donateR
 initNavbar();
 loadComments();
 loadFundraiser();
-
-// Hide donation box if logged in as NGO
-const role = localStorage.getItem("role");
-if (role === "ngo") {
-  const donationBox = document.querySelector(".donation-box");
-  if (donationBox) {
-    donationBox.style.display = "none";
-  }
-}
 
 // Update connect button text if MetaMask is missing
 if (connectMetaMaskBtn && !window.ethereum) {

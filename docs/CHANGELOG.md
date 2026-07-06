@@ -343,8 +343,29 @@ Detailed Engineering Report
 
 docs/releases/v2.8.3.md
 
+## Version 2.8 Part 4
+
+Status
+
+Completed
+
+Summary
+
+- Implemented profile auto-population and permanent MetaMask wallet linking in the database.
+- Ran database migrations adding missing profile fields to donor_details and ngo_details.
+- Created Campaigns category filters, search input bar, and heart favorite bookmark system.
+- Rendered goal achieved badges, closed notice banners, and moderated comment deletion triggers.
+- Rendered My Watchlist Grid and Sepolia Verify Proof modals on Donor Dashboard.
+- Rendered status badges, Close status toggles, and Edit Description modal overlays on NGO Dashboard.
+
+Detailed Engineering Report
+
+docs/releases/v2.8.4.md
+
 Commit
 
-fix: ngo dashboard wallet load and metamask download redirects
+feat: version 2.8 part 4 final roadmap overhaul
+
+---
 
 End of Changelog.

@@ -92,4 +92,27 @@ export const myDonations = async (req, res) => {
   }
 };
 
+export const getFundraiserDonations = async (req, res) => {
+  const fundraiserId = parseInt(req.params.id);
+  if (isNaN(fundraiserId)) {
+    throw new ExpressError(400, "Invalid fundraiser ID");
+  }
+
+  try {
+    const [rows] = await db.promise().query(
+      `SELECT d.*, u.name AS donor_name
+      FROM donations d
+      LEFT JOIN users u ON d.donor_address = u.wallet_address
+      WHERE d.fundraiser_id = ?
+      ORDER BY d.donated_at DESC`,
+      [fundraiserId]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    console.error("Error fetching fundraiser donations:", err);
+    throw new ExpressError(500, "Database error fetching fundraiser donations");
+  }
+};
+
 

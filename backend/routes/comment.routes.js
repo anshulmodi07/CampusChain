@@ -8,7 +8,7 @@
 
 
 import express from "express";
-import { addComment, getComments } from "../controllers/comment.controller.js";
+import { addComment, getComments, deleteComment } from "../controllers/comment.controller.js";
 // 3️⃣ Import middleware
 import { verifyToken } from "../middlewares/auth.middleware.js";
 
@@ -21,5 +21,6 @@ const router = express.Router();
 
 router.post("/api/comment", verifyToken, addComment);
 router.get("/api/comments/:id", getComments);
+router.delete("/api/comments/:commentId", verifyToken, deleteComment);
 
 export default router;

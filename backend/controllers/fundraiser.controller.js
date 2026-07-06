@@ -7,7 +7,7 @@ export const getAllFundraisers = async (req, res) => {
     const sql = `
       SELECT f.fundraiser_id AS fundraiserId, f.title, f.description, f.goal,
       f.owner_wallet AS ownerWallet, f.fundraiser_type AS fundraiserType,
-      f.category, f.people_affected AS peopleAffected,
+      f.category, f.people_affected AS peopleAffected, f.status,
       IFNULL(SUM(CASE WHEN d.currency = 'INR' THEN d.amount / 300000.0 ELSE d.amount END), 0) AS raised
       FROM fundraisers f
       LEFT JOIN donations d ON f.fundraiser_id = d.fundraiser_id
@@ -28,7 +28,7 @@ export const getFundraiserById = async (req, res) => {
     const sql = `
       SELECT f.fundraiser_id AS fundraiserId, f.title, f.description, f.goal,
       f.owner_wallet AS ownerWallet, f.fundraiser_type AS fundraiserType,
-      f.category, f.people_affected AS peopleAffected, f.created_at AS createdAt,
+      f.category, f.people_affected AS peopleAffected, f.created_at AS createdAt, f.status,
       IFNULL(SUM(CASE WHEN d.currency = 'INR' THEN d.amount / 300000.0 ELSE d.amount END), 0) AS raised
       FROM fundraisers f
       LEFT JOIN donations d ON f.fundraiser_id = d.fundraiser_id
@@ -90,7 +90,7 @@ export const getMyFundraisers = async (req, res) => {
     const sql = `
       SELECT f.fundraiser_id AS fundraiserId, f.title, f.description, f.goal,
       f.owner_wallet AS ownerWallet, f.fundraiser_type AS fundraiserType,
-      f.category, f.people_affected AS peopleAffected, f.created_at,
+      f.category, f.people_affected AS peopleAffected, f.created_at, f.status,
       IFNULL(SUM(CASE WHEN d.currency = 'INR' THEN d.amount / 300000.0 ELSE d.amount END), 0) AS raised
       FROM fundraisers f
       LEFT JOIN donations d ON f.fundraiser_id = d.fundraiser_id
@@ -118,5 +118,57 @@ export const getTotalRaised = async (req, res) => {
 
   } catch (err) {
     throw new ExpressError(500, "Database error calculating total raised");
+  }
+};
+
+// -------- UPDATE STATUS --------
+export const updateFundraiserStatus = async (req, res) => {
+  const fundraiserId = parseInt(req.params.id);
+  const { status } = req.body; // 'active' or 'closed'
+  const userWallet = req.user.wallet;
+
+  if (isNaN(fundraiserId) || !status) {
+    throw new ExpressError(400, "Missing status or fundraiser ID");
+  }
+
+  try {
+    const [result] = await db.promise().query(
+      "UPDATE fundraisers SET status = ? WHERE fundraiser_id = ? AND owner_wallet = ?",
+      [status, fundraiserId, userWallet]
+    );
+
+    if (result.affectedRows === 0) {
+      throw new ExpressError(403, "Forbidden: You do not own this fundraiser or it does not exist");
+    }
+
+    res.json({ success: true, message: `Fundraiser status updated to ${status}` });
+  } catch (err) {
+    throw err.status ? err : new ExpressError(500, "Database error updating status");
+  }
+};
+
+// -------- UPDATE DESCRIPTION --------
+export const updateFundraiserDescription = async (req, res) => {
+  const fundraiserId = parseInt(req.params.id);
+  const { description } = req.body;
+  const userWallet = req.user.wallet;
+
+  if (isNaN(fundraiserId) || description === undefined) {
+    throw new ExpressError(400, "Missing description or fundraiser ID");
+  }
+
+  try {
+    const [result] = await db.promise().query(
+      "UPDATE fundraisers SET description = ? WHERE fundraiser_id = ? AND owner_wallet = ?",
+      [description, fundraiserId, userWallet]
+    );
+
+    if (result.affectedRows === 0) {
+      throw new ExpressError(403, "Forbidden: You do not own this fundraiser or it does not exist");
+    }
+
+    res.json({ success: true, message: "Description updated successfully" });
+  } catch (err) {
+    throw err.status ? err : new ExpressError(500, "Database error updating description");
   }
 };
