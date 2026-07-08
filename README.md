@@ -4,7 +4,7 @@
 ![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-REST%20API-000000?style=for-the-badge&logo=express&logoColor=white)
-![Solidity](https://img.shields.io/badge/Solidity-Smart%20Contract-363636?style=for-the-badge&logo=solidity&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-Smart%20Contracts-363636?style=for-the-badge&logo=solidity&logoColor=white)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia%20Testnet-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white)
 ![ethers.js](https://img.shields.io/badge/ethers.js-Web3%20Library-2535A0?style=for-the-badge&logoColor=white)
 ![MetaMask](https://img.shields.io/badge/MetaMask-Wallet-F6851B?style=for-the-badge&logo=metamask&logoColor=white)
@@ -15,14 +15,16 @@
 ![Let's Encrypt](https://img.shields.io/badge/SSL-Let's%20Encrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**CampusChain** is a Web3-based crowdfunding platform designed for college campuses to bring **transparency** and **trust** into student-led fundraising. It uses blockchain as a public, immutable ledger so that fundraising data can be independently verified without relying on blind trust in organizers.
+**CampusChain** is a hybrid Web2/Web3 crowdfunding platform designed for college campuses to bring **transparency** and **trust** into student-led fundraising. It uses the blockchain as a public, immutable ledger so that fundraising data and transactions can be independently verified without relying on blind trust in organizers.
 
 ---
+
 ## 🌐 Live Deployment
 
 - **Frontend (Netlify):** https://campuschain07.netlify.app
 - **Backend API (AWS EC2):** https://campuschain.online
-- **Smart Contract (Etherscan):** https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc
+- **Crowdfunding Contract (Etherscan):** [0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc](https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc)
+- **Proof Registry Contract (Etherscan):** [0x26Fa74BAC10e74D2D02F0F40187e833A221fE112](https://sepolia.etherscan.io/address/0x26Fa74BAC10e74D2D02F0F40187e833A221fE112)
 
 ---
 
@@ -34,10 +36,9 @@ Watch a full walkthrough of CampusChain, explaining the problem, architecture, a
 
 ---
 
-
 ## 🔐 Demo Login Credentials
 
-**NGO**
+**NGO / Organizer**
 - Email: `ngo@gmail.com`
 - Password: `123`
 
@@ -50,15 +51,15 @@ Watch a full walkthrough of CampusChain, explaining the problem, architecture, a
 ## 🚩 Problem Statement
 
 In college campuses, fundraising is common for:
-* 🎪 Fests and cultural events
-* 🤝 Student clubs and societies
-* 🚑 Social causes and emergency relief
+- 🎪 Fests and cultural events
+- 🤝 Student clubs and societies
+- 🚑 Social causes and emergency relief
 
 **The Core Issue:**
 The problem is not payments, but a **lack of transparency**. Today:
 1. Fundraising records are maintained privately (Excel sheets, screenshots, manual reports).
-2. Donors have no independent way to verify how much money was raised.
-3. Trust is placed entirely on organizers.
+2. Donors have no independent way to verify how much money was actually raised or whether transaction proofs are real.
+3. Trust is placed entirely on organizers, and system administrators can alter fundraising metrics behind the scenes (a single point of failure).
 
 This discourages participation and creates accountability concerns, even when intentions are genuine.
 
@@ -66,12 +67,15 @@ This discourages participation and creates accountability concerns, even when in
 
 ## 💡 Solution: CampusChain
 
-CampusChain solves this problem by using blockchain as a **trust layer**:
+CampusChain solves this by creating a **trust layer** that combines rapid fiat onboarding with Web3 immutability:
 
-* **On-Chain Recording:** Every fundraiser and donation is recorded on the blockchain.
-* **Immutability:** Records are publicly verifiable and cannot be altered.
-* **Decentralization:** No single organizer or admin can modify fundraising data behind the scenes.
-* **Verification:** Donors can independently verify totals without trusting intermediaries.
+- **On-Chain Recording:** Every fundraiser and donation is recorded on the blockchain, publicly verifiable and cannot be altered.
+- **Dual-Currency Gateways:** Supports direct Web3 Ethereum donations via **MetaMask** alongside card/UPI fiat checkouts via **Razorpay**, displaying standardized native and converted currency balances (`1 ETH = ~₹3,00,000 INR`).
+- **On-Chain Cryptographic Proof Registry:** Automatically hashes and anchors donation details to a dedicated Ethereum Sepolia Testnet contract in the background, providing a public verification receipt.
+- **Etherscan Verification Portal:** A **🔒 Verify Proof** interface on the Donor Dashboard lets donors view on-chain audit proof records and jump directly to the corresponding Sepolia block transactions.
+- **NGO Campaign Control Panel:** NGO campaign owners can close/re-open campaigns, update description briefs in real-time, view contributor ledgers, and delete/moderate comments.
+- **Bookmarks, Watchlist & Filters:** Instant text search, category tab filters (Education, Healthcare, Clubs, etc.), heart favoriting shortcuts, and a persistent **My Watchlist** panel.
+- **Decentralization:** No single organizer or admin can modify fundraising data behind the scenes; anyone can audit the data.
 
 > **Note:** Blockchain is used here as a *ledger of truth*, not just as a payment replacement.
 
@@ -147,10 +151,12 @@ TiDB Cloud     Ethereum Sepolia
 
 ### Architecture Components
 
-- **Frontend (Netlify):** Static HTML/CSS/JS site, deployed automatically via GitHub; consumes backend APIs and verifies fundraising data directly from the blockchain.
+- **Frontend (Netlify):** Serves the static client, connects with MetaMask wallets, and handles client-side Web3.js/ethers.js contract initializations; deployed automatically via GitHub.
 - **Backend (AWS EC2):** Node.js + Express REST APIs running on Ubuntu 24.04 LTS, managed by PM2 and served behind an Nginx reverse proxy; handles authentication, authorization, and application logic.
-- **Database (MySQL / TiDB Cloud):** Stores users, fundraisers, donations, comments, and transaction metadata for fast UI rendering.
-- **Blockchain (Ethereum Sepolia):** Serves as the immutable ledger of truth for fundraiser creation and donation records.
+- **Database (TiDB Cloud / MySQL):** Distributed relational database hosting user records, fundraiser profiles, comments, donations, and transaction metadata for fast UI rendering.
+- **Smart Contracts (Solidity / Sepolia):**
+  - `CampusChainCrowdfunding.sol`: Manages campaign states and signs client-side donations.
+  - `DonationProofRegistry.sol`: Performs backend server-side proof-registry anchoring, acting as the immutable ledger of truth.
 
 ---
 
@@ -176,17 +182,18 @@ TiDB Cloud     Ethereum Sepolia
 - **TiDB Cloud (MySQL):** Stores users, fundraisers, donations, comments, and transaction metadata
 
 ### Blockchain
-- **Ethereum Sepolia Testnet:** Smart contracts handle fundraiser verification, donation recording, and transparent transactions
+- **Ethereum Sepolia Testnet:** Smart contracts handle fundraiser verification, donation recording, proof-registry anchoring, and transparent transactions
 
 ---
 
-### 🔗 Smart Contract
+### 🔗 Smart Contracts
 
-The smart contract forms the core Web3 layer and is responsible for:
+The smart contracts form the core Web3 layer and are responsible for:
 
 - ✅ Fundraiser creation and on-chain state management
 - 💰 Recording donations immutably on the blockchain
 - 🔄 Managing fundraiser lifecycle (active, completed)
+- 🔒 Anchoring cryptographic donation proofs for independent verification
 - ⚓ Anchoring expense reports via hash references (future-ready)
 
 > **Note:** MetaMask is used strictly as a transaction-signing interface to demonstrate blockchain-based transparency; the core value lies in the immutable public ledger, not payments.
@@ -196,9 +203,7 @@ The smart contract forms the core Web3 layer and is responsible for:
 ## ⚙️ Tech Stack
 
 **Frontend**
-- HTML
-- CSS
-- JavaScript
+- HTML, CSS, JavaScript
 
 **Backend**
 - Node.js
@@ -213,15 +218,16 @@ The smart contract forms the core Web3 layer and is responsible for:
 - ethers.js
 - Solidity
 
+**Payments**
+- MetaMask (native ETH donations)
+- Razorpay (card/UPI fiat onboarding)
+
 **Cloud & DevOps**
 - AWS EC2 (Ubuntu 24.04 LTS)
 - Nginx (reverse proxy, HTTPS termination)
 - PM2 (process management)
 - Let's Encrypt / Certbot (SSL)
 - Netlify + GitHub (frontend CI/CD)
-
-**Wallet**
-- MetaMask (transaction signing and user authorization)
 
 ---
 
@@ -288,19 +294,38 @@ GitHub
                     Production Backend
 ```
 
+---
+
 ## 🏃 Running Locally
 
 > **Note:** The project is already deployed. Local setup is only required if you want to run it locally.
 
-### Backend
+### 1. Backend Server
+Create a `backend/.env` file with your environment variables:
+
+```env
+DB_HOST=your-tidb-host
+DB_NAME=campuschain
+DB_USER=your-user
+DB_PASS=your-password
+DB_PORT=4000
+JWT_SECRET=your-secret
+PROOF_REGISTRY_ADDRESS=0x26Fa74BAC10e74D2D02F0F40187e833A221fE112
+RPC_URL=https://eth-sepolia.g.alchemy.com/v2/your-api-key
+ANCHOR_PRIVATE_KEY=your-sepolia-wallet-private-key
+```
+
+Install dependencies and run:
+
 ```bash
 cd backend
 npm install
 npm start
 ```
 
-### Frontend
-Simply open the HTML files in `frontend/` directly in a browser, or serve the folder with any static file server, e.g.:
+### 2. Frontend Client
+Simply open the HTML files in `frontend/` directly in a browser, or serve the folder with any static file server:
+
 ```bash
 cd frontend
 npx serve .
@@ -316,7 +341,7 @@ npx serve .
 - Reverse Proxy Architecture (Nginx)
 - Process Management with PM2
 - Cloud Database (TiDB Cloud)
-- Blockchain Integration (Ethereum Sepolia)
+- Blockchain Integration (Ethereum Sepolia) with dual smart contracts
 - Automatic Frontend Deployment via Netlify
 
 ---
@@ -342,10 +367,10 @@ Enables fast frontend deployment with GitHub integration and automatic redeploym
 
 ## 🔮 Future Scope
 
-- **Hybrid Payments:** Integration of UPI/Razorpay with on-chain verification
-- **DAO Governance:** Community voting for fund release
-- **Expense Verification:** Dashboards for tracking utilization
-- **IPFS Storage:** Decentralized document storage for receipts/proofs
+- **DAO Governance:** Integrate governance structures to allow donors to vote on milestone-based fund releases.
+- **IPFS Storage:** Store receipts, photos, and spending reports on IPFS with hash links on-chain.
+- **Soulbound Tokens (SBTs):** Issue non-transferable reward tokens to student donors as verified badges of contribution.
+- **Expense Verification:** Dashboards for tracking fund utilization after a campaign closes.
 
 ---
 
