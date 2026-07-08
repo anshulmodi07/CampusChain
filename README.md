@@ -1,17 +1,38 @@
 # 🎓 CampusChain
 
+![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-REST%20API-000000?style=for-the-badge&logo=express&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-Smart%20Contract-363636?style=for-the-badge&logo=solidity&logoColor=white)
+![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia%20Testnet-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white)
+![ethers.js](https://img.shields.io/badge/ethers.js-Web3%20Library-2535A0?style=for-the-badge&logoColor=white)
+![MetaMask](https://img.shields.io/badge/MetaMask-Wallet-F6851B?style=for-the-badge&logo=metamask&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-TiDB%20Cloud-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-Reverse%20Proxy-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![PM2](https://img.shields.io/badge/PM2-Process%20Manager-2B037A?style=for-the-badge&logo=pm2&logoColor=white)
+![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Let's Encrypt](https://img.shields.io/badge/SSL-Let's%20Encrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
 **CampusChain** is a Web3-based crowdfunding platform designed for college campuses to bring **transparency** and **trust** into student-led fundraising. It uses blockchain as a public, immutable ledger so that fundraising data can be independently verified without relying on blind trust in organizers.
 
+---
 ## 🌐 Live Deployment
 
-⚠️ **Note:** The backend is deployed on a free-tier service and may take a few seconds to respond on the first request due to cold start. Subsequent requests are instant.  
-ℹ️ If the backend appears unresponsive on first load, visiting the health check endpoint once will initialize the server:  
-https://campuschain-bqul.onrender.com/health
+- **Frontend (Netlify):** https://campuschain07.netlify.app
+- **Backend API (AWS EC2):** https://campuschain.online
+- **Smart Contract (Etherscan):** https://sepolia.etherscan.io/address/0x4bd64A1f096c7eaBbeC73886CDD9Fb8c672036dc
 
-- **Frontend (Netlify):** https://campuschain07.netlify.app  
-- **Backend API (Render):** https://campuschain-bqul.onrender.com  
-- **Blockchain:** Ethereum Sepolia Testnet  
+---
 
+## 🎥 Demo Video
+
+Watch a full walkthrough of CampusChain, explaining the problem, architecture, and live demo:
+
+📺 **[Watch the demo video](https://drive.google.com/file/d/1ggKxY5vZbAyPPcyznEWltzQ9AaclkdGc/view?usp=sharing)**
+
+---
 
 
 ## 🔐 Demo Login Credentials
@@ -35,9 +56,9 @@ In college campuses, fundraising is common for:
 
 **The Core Issue:**
 The problem is not payments, but a **lack of transparency**. Today:
-1.  Fundraising records are maintained privately (Excel sheets, screenshots, manual reports).
-2.  Donors have no independent way to verify how much money was raised.
-3.  Trust is placed entirely on organizers.
+1. Fundraising records are maintained privately (Excel sheets, screenshots, manual reports).
+2. Donors have no independent way to verify how much money was raised.
+3. Trust is placed entirely on organizers.
 
 This discourages participation and creates accountability concerns, even when intentions are genuine.
 
@@ -70,22 +91,92 @@ For this specific problem, Web3 is **essential**, not optional.
 
 ---
 
-## 🧠 Architecture Overview
+## 🏗 Deployment Architecture
 
-CampusChain follows a hybrid Web2 + Web3 architecture to balance fast user experience with trustless transparency.
-```mermaid
-graph TD
-    A["Frontend (HTML/CSS/JS) - Netlify"] -->|HTTPS REST APIs| B["Backend (Node.js / Express) - Render"]
-    B -->|Metadata Indexing| C["MySQL Database - TiDB Cloud"]
-    A -->|On-chain Verification| D["Blockchain - Ethereum Sepolia"]
-    D -.->|Immutable Ledger| A
 ```
+                        Users
+                           │
+                           ▼
+              Netlify (Frontend - HTML/CSS/JS)
+                           │
+                       HTTPS (443)
+                           │
+                           ▼
+               https://campuschain.online
+                           │
+                           ▼
+              AWS EC2 (Ubuntu 24.04 LTS)
+                           │
+                 Nginx Reverse Proxy
+                           │
+                           ▼
+                     PM2 Process Manager
+                           │
+                           ▼
+                Node.js + Express Backend
+                           │
+          ┌────────────────┴────────────────┐
+          │                                  │
+          ▼                                  ▼
+   TiDB Cloud (MySQL)              Ethereum Sepolia
+```
+
+### 🔄 Request Flow
+
+```
+Browser
+    │
+    ▼
+Netlify
+    │
+  HTTPS
+    ▼
+campuschain.online
+    │
+  Nginx
+    │
+   PM2
+    │
+Node.js (Express)
+    │
+ ┌──┴──────────────┐
+ │                  │
+ ▼                  ▼
+TiDB Cloud     Ethereum Sepolia
+```
+
 ### Architecture Components
 
-- **Frontend (Netlify):** Static HTML/CSS/JS deployed on Netlify; consumes backend APIs and verifies fundraising data directly from the blockchain.  
-- **Backend (Render):** Node.js + Express REST APIs deployed on Render; handles authentication, authorization, and application logic.  
-- **Database (MySQL / TiDB Cloud):** Stores non-financial fundraiser metadata (title, description, category, impact) for fast UI rendering.  
-- **Blockchain (Ethereum Sepolia):** Serves as the immutable ledger of truth for fundraiser creation and donation records.  
+- **Frontend (Netlify):** Static HTML/CSS/JS site, deployed automatically via GitHub; consumes backend APIs and verifies fundraising data directly from the blockchain.
+- **Backend (AWS EC2):** Node.js + Express REST APIs running on Ubuntu 24.04 LTS, managed by PM2 and served behind an Nginx reverse proxy; handles authentication, authorization, and application logic.
+- **Database (MySQL / TiDB Cloud):** Stores users, fundraisers, donations, comments, and transaction metadata for fast UI rendering.
+- **Blockchain (Ethereum Sepolia):** Serves as the immutable ledger of truth for fundraiser creation and donation records.
+
+---
+
+## ☁️ Cloud Infrastructure
+
+### Frontend
+- **Hosting:** Netlify
+- **Framework:** HTML, CSS, JavaScript
+- **Deployment:** Automatic via GitHub
+- **Live URL:** https://campuschain07.netlify.app
+
+### Backend
+- **Server:** AWS EC2 (Ubuntu Server)
+- **Runtime:** Node.js + Express.js
+- **Process Manager:** PM2 — keeps the server alive, auto-restarts on crashes, and starts automatically after reboot
+- **Reverse Proxy:** Nginx — handles HTTPS termination and forwards requests to Node.js (public ports 80 & 443); Node.js itself runs internally on `localhost:5000` and is not directly exposed to the internet
+
+### Domain & SSL
+- **Custom Domain:** https://campuschain.online (DNS points to the AWS EC2 public IP)
+- **SSL:** HTTPS secured via Let's Encrypt / Certbot, with automatic certificate renewal
+
+### Database
+- **TiDB Cloud (MySQL):** Stores users, fundraisers, donations, comments, and transaction metadata
+
+### Blockchain
+- **Ethereum Sepolia Testnet:** Smart contracts handle fundraiser verification, donation recording, and transparent transactions
 
 ---
 
@@ -93,32 +184,57 @@ graph TD
 
 The smart contract forms the core Web3 layer and is responsible for:
 
-- ✅ Fundraiser creation and on-chain state management  
-- 💰 Recording donations immutably on the blockchain  
-- 🔄 Managing fundraiser lifecycle (active, completed)  
-- ⚓ Anchoring expense reports via hash references (future-ready)  
+- ✅ Fundraiser creation and on-chain state management
+- 💰 Recording donations immutably on the blockchain
+- 🔄 Managing fundraiser lifecycle (active, completed)
+- ⚓ Anchoring expense reports via hash references (future-ready)
 
-> **Note:** MetaMask is used strictly as a transaction-signing interface to demonstrate blockchain-based transparency.
+> **Note:** MetaMask is used strictly as a transaction-signing interface to demonstrate blockchain-based transparency; the core value lies in the immutable public ledger, not payments.
 
 ---
 
-### ⚙️ Tech Stack
+## ⚙️ Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript (deployed on Netlify)  
-- **Backend:** Node.js, Express.js (deployed on Render, JWT-based authentication)  
-- **Database:** MySQL (TiDB Cloud)  
-- **Blockchain:** Ethereum (Sepolia Testnet)  
-- **Web3 Library:** ethers.js  
-- **Smart Contracts:** Solidity  
-- **Wallet:** MetaMask (transaction signing and user authorization)
+**Frontend**
+- HTML
+- CSS
+- JavaScript
 
+**Backend**
+- Node.js
+- Express.js
+- JWT-based authentication
+
+**Database**
+- MySQL (TiDB Cloud)
+
+**Blockchain**
+- Ethereum (Sepolia Testnet)
+- ethers.js
+- Solidity
+
+**Cloud & DevOps**
+- AWS EC2 (Ubuntu 24.04 LTS)
+- Nginx (reverse proxy, HTTPS termination)
+- PM2 (process management)
+- Let's Encrypt / Certbot (SSL)
+- Netlify + GitHub (frontend CI/CD)
+
+**Wallet**
+- MetaMask (transaction signing and user authorization)
+
+---
 
 ## 🔐 Security & Access Control
 
-- JWT-based authentication for all protected backend routes  
-- Role-based access control (NGO vs Donor) enforced at API level  
+- JWT-based authentication for all protected backend routes
+- Role-based access control (NGO vs Donor) enforced at the API level
+- HTTPS enabled end-to-end via Let's Encrypt
+- Backend process isolated behind Nginx; public access limited to ports 80 & 443
+- Node.js backend managed securely through PM2
 - Smart contract state is immutable and publicly verifiable on-chain
 
+---
 
 ## 📁 Project Structure
 
@@ -132,10 +248,11 @@ campuschain/
 │   ├── utils/
 │   ├── app.js
 │   └── server.js
-|   └── certs
+│   └── certs
 │
 ├── frontend/
 │   ├── contractConfig.js
+│   ├── src/
 │   ├── index.html
 │   ├── fundraiser.html
 │   ├── create-fundraiser.html
@@ -145,29 +262,33 @@ campuschain/
 │   └── (Associated .js files)
 │
 └── contract.sol
-```                  
-
-
-## 🚀 Running Locally
-
-### Backend
-```bash
-cd backend
-npm install
-npm start
 ```
 
-## ⚠️ Hackathon Note (Pro Round 2)
+---
 
-This project represents the **final deployed MVP** developed for **Web3 Odyssey – Pro Round 2**.
+## 🚀 Deployment Workflow
 
-- **Timeline:** January 10  
-- **Demo:** Live, end-to-end user interaction showcased on **Ethereum Sepolia Testnet**  
-- **Deployment:** Fully deployed frontend and backend with on-chain verification  
-- **Codebase:** Complete and documented codebase updated in the original Round 1 GitHub repository  
-> **Design Clarification:** MetaMask is used strictly as a transaction-signing interface to demonstrate on-chain transparency; the core value lies in the immutable public ledger, not payments.
+```
+Developer
+     │
+     ▼
+GitHub
+     │
+     ├──────────────► Netlify
+     │                    │
+     │                    ▼
+     │             Frontend Deployment
+     │
+     └──────────────► AWS EC2
+                          │
+                          ▼
+                   Git Pull / PM2 Restart
+                          │
+                          ▼
+                    Production Backend
+```
 
-## 🚀 Running Locally (Optional)
+## 🏃 Running Locally
 
 > **Note:** The project is already deployed. Local setup is only required if you want to run it locally.
 
@@ -178,16 +299,68 @@ npm install
 npm start
 ```
 
+### Frontend
+Simply open the HTML files in `frontend/` directly in a browser, or serve the folder with any static file server, e.g.:
+```bash
+cd frontend
+npx serve .
+```
+
+---
+
+## 📌 Production Features
+
+- AWS Cloud Deployment
+- HTTPS Enabled with Custom Domain
+- Automatic SSL Renewal
+- Reverse Proxy Architecture (Nginx)
+- Process Management with PM2
+- Cloud Database (TiDB Cloud)
+- Blockchain Integration (Ethereum Sepolia)
+- Automatic Frontend Deployment via Netlify
+
+---
+
+## 📚 Architecture Decisions
+
+**Why AWS EC2?**
+Provides complete control over the server environment, networking, deployment pipeline, and infrastructure configuration.
+
+**Why Nginx?**
+Acts as a reverse proxy, handles HTTPS termination, and securely forwards requests to the backend service.
+
+**Why PM2?**
+Ensures the backend remains online by automatically restarting crashed processes and starting the application after server reboots.
+
+**Why TiDB Cloud?**
+Provides a managed MySQL-compatible distributed database without requiring self-hosted database administration.
+
+**Why Netlify?**
+Enables fast frontend deployment with GitHub integration and automatic redeployments.
+
+---
+
 ## 🔮 Future Scope
 
- Hybrid Payments: Integration of UPI/Razorpay with on-chain verification.
+- **Hybrid Payments:** Integration of UPI/Razorpay with on-chain verification
+- **DAO Governance:** Community voting for fund release
+- **Expense Verification:** Dashboards for tracking utilization
+- **IPFS Storage:** Decentralized document storage for receipts/proofs
 
- DAO Governance: Community voting for fund release.
-
- Expense Verification: Dashboards for tracking utilization.
-
- IPFS Storage: Decentralized document storage for receipts/proofs.
+---
 
 ## 🏁 Summary
 
 CampusChain demonstrates how Web3 can solve a real campus-level problem by replacing blind trust with verifiable transparency. By using blockchain as a public ledger, the platform ensures accountability by design — something traditional Web2 systems cannot guarantee.
+
+---
+
+## 📬 Contact
+
+**Maintainer:** Anshul Modi — `anshul2812modi@gmail.com`
+
+---
+
+## 📄 License
+
+MIT License — see `LICENSE` file.
