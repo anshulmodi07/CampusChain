@@ -439,6 +439,10 @@ const postCommentBtn = document.getElementById("postCommentBtn");
 if (postCommentBtn) {
   postCommentBtn.addEventListener("click", async () => {
     const commentText = document.getElementById("commentInput").value.trim();
+    if (!commentText) {
+      alert("Please enter a comment message before posting!");
+      return;
+    }
     const token = localStorage.getItem("token");
 
     await fetch(`${API_BASE}/api/comment`, {
