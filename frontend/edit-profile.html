@@ -282,7 +282,7 @@
 <body>
 
   <nav>
-    <div class="logo" onclick="window.location.href='index.html'">Hope Chain</div>
+    <div class="logo">CampusChain</div>
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="fundraiser.html">All Fundraisers</a></li>
@@ -300,6 +300,16 @@
     <div class="input-group">
       <label for="name">Full Name</label>
       <input id="name" type="text" placeholder="Enter your name">
+    </div>
+
+    <!-- Wallet Linking -->
+    <div class="section-header">MetaMask Wallet Link</div>
+    <div class="input-group">
+      <label for="walletAddress">Registered Wallet Address</label>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <input id="walletAddress" type="text" placeholder="No wallet address linked" readonly style="flex: 1; background: #f1f5f9; cursor: not-allowed; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 8px;">
+        <button id="linkWalletBtn" type="button" style="width: auto; margin-top: 0; padding: 12px 20px; white-space: nowrap; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: none;">🦊 Link Wallet</button>
+      </div>
     </div>
 
     <!-- Donor Section -->
@@ -367,63 +377,7 @@
     </div>
   </div>
 
-  <script>
-    // Auth state management
-    const token = window.localStorage.getItem("token");
-    if (token) {
-      document.getElementById("loginLink").style.display = "none";
-      document.getElementById("signupLink").style.display = "none";
-      document.getElementById("dashboardLink").style.display = "block";
-      document.getElementById("logoutBtn").style.display = "block";
-    }
-
-    document.getElementById("logoutBtn")?.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.localStorage.removeItem("token");
-      window.location.href = "index.html";
-    });
-
-    // Save button functionality
-    document.getElementById("saveBtn").addEventListener("click", async () => {
-      const profileData = {
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        city: document.getElementById("city").value,
-        state: document.getElementById("state").value,
-        country: document.getElementById("country").value,
-        donation_preference: document.getElementById("donation_preference").value,
-        organization_name: document.getElementById("organization_name").value,
-        registration_number: document.getElementById("registration_number").value,
-        contact_person: document.getElementById("contact_person").value,
-        contact_phone: document.getElementById("contact_phone").value,
-        address: document.getElementById("address").value
-      };
-
-      try {
-        // Add your API call here
-        // const response = await fetch('YOUR_API_ENDPOINT', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'Authorization': `Bearer ${token}`
-        //   },
-        //   body: JSON.stringify(profileData)
-        // });
-
-        // Show success message
-        const successMsg = document.getElementById("successMessage");
-        successMsg.classList.add("show");
-        
-        setTimeout(() => {
-          successMsg.classList.remove("show");
-        }, 3000);
-
-      } catch (error) {
-        console.error("Error saving profile:", error);
-        alert("Failed to save profile. Please try again.");
-      }
-    });
-  </script>
+  <script type="module" src="editprofile.js?v=2"></script>
 
 </body>
 

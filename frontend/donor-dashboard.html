@@ -398,7 +398,7 @@
       <li><a href="index.html">Home</a></li>
       <li><a href="fundraiser.html">Campaigns</a></li>
       <li><a id="logoutBtn" href="#">Logout</a></li>
-      <li><button onclick="window.location.href='edit-profile.html'">Edit Profile</button></li>
+      <li><button id="editProfileBtn">Edit Profile</button></li>
     </ul>
   </nav>
 
@@ -413,7 +413,7 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon">💰</div>
-        <div class="stat-value" id="totalDonated">₹0</div>
+        <div class="stat-value" id="totalDonated" style="font-size: 24px;">0.0000 ETH <span style="font-size: 16px; font-weight: normal; color: #64748b; display: block; margin-top: 5px;">+ ₹0 INR</span></div>
         <div class="stat-label">Total Contributed</div>
       </div>
       <div class="stat-card">
@@ -426,21 +426,25 @@
 
     <!-- Action Buttons -->
     <div class="btn-bar">
-      <button class="btn" onclick="window.location.href='fundraiser.html'">
+      <button id="exploreCampaignsBtn" class="btn">
         🔍 Explore Campaigns
       </button>
 
-      <button class="btn" onclick="loadDonations()">
+      <button id="viewContributionsBtn" class="btn">
         📜 View My Contributions
       </button>
 
-      <button class="btn btn-secondary" onclick="connectMetaMask()">
+      <button id="connectMetaMaskBtn" class="btn btn-secondary">
         🦊 Connect MetaMask
       </button>
     </div>
 
     <!-- Wallet Status -->
     <div id="walletStatus" class="wallet-status"></div>
+
+    <!-- Watchlist Section -->
+    <h2 class="section-title" id="watchlistTitle" style="display: none; margin-top: 40px; margin-bottom: 20px;">My Watchlist</h2>
+    <div id="watchlistGrid" style="display: none; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 40px;"></div>
 
     <!-- Donations List -->
     <h2 class="section-title">My Contributions</h2>
@@ -454,6 +458,26 @@
 
   </div>
 
-<script src="donor-dashboard.js"></script>
+  <!-- Verification Proof Modal -->
+  <div id="proofModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+      <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 20px; font-weight: 800;">🔒 On-Chain Verification Proof</h3>
+      <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">This donation was successfully anchored to the Ethereum blockchain network to guarantee payment immutability and transparent audit records.</p>
+      
+      <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: monospace; font-size: 13px; margin-bottom: 20px; word-break: break-all;">
+        <strong>Anchor Tx Hash:</strong> <br>
+        <span id="proofTxHash" style="color: #0369a1;">-</span> <br><br>
+        <strong>Status:</strong> <span style="color: #15803d; font-weight: bold;">Anchored & Verified ✓</span> <br>
+        <strong>Network:</strong> Sepolia Testnet
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <a id="proofEtherscanLink" href="#" target="_blank" style="padding: 10px 20px; text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; font-weight: 700; font-size: 14px; transition: transform 0.2s;">🌐 View on Etherscan</a>
+        <button id="closeProofModalBtn" style="padding: 10px 20px; border: 1.5px solid #cbd5e1; background: white; border-radius: 8px; font-weight: 600; cursor: pointer; color: #475569; font-size: 14px;">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script type="module" src="donor-dashboard.js?v=2"></script>
 </body>
 </html>

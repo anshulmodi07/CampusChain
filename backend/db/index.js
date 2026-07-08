@@ -5,16 +5,32 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+import dotenv from "dotenv";
+dotenv.config();
 
-const db = mysql.createConnection({
+console.log("DB_USER =", process.env.DB_USER);
+console.log("DB_HOST =", process.env.DB_HOST);
+console.log("DB_PASS =", process.env.DB_PASS ? "EXISTS" : "MISSING");
+
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+  timezone: "Z",
+
   ssl: {
-    ca: fs.readFileSync(path.join(__dirname, "../certs/tidb-ca.pem")),
+    rejectUnauthorized: false,
   },
+
+  waitForConnections: true,
+  connectionLimit: 10,
+  maxIdle: 10,
+  idleTimeout: 60000,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
+  queueLimit: 0,
 });
 
 export default db;

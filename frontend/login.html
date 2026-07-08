@@ -192,6 +192,33 @@
       font-size: 28px;
     }
   }
+
+  .test-btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .btn-secondary {
+    margin-top: 0 !important;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+    padding: 10px;
+    font-weight: 600;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-secondary:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
 </style>
 </head>
 
@@ -211,7 +238,13 @@
       <input type="password" id="password" placeholder="Enter your password" required />
     </div>
 
-    <button onclick="loginUser()">Login to Dashboard</button>
+    <button id="loginSubmitBtn" type="button">Login to Dashboard</button>
+
+    <div class="test-btn-group">
+      <button id="testDonorBtn" type="button" class="btn-secondary">👤 Login as Test Donor</button>
+      <button id="testNgoBtn" type="button" class="btn-secondary">🏢 Login as Test NGO</button>
+    </div>
+
     <p class="msg" id="msg"></p>
 
     <div class="footer-links">
@@ -220,6 +253,7 @@
     </div>
   </div>
 
-<script src="login.js"></script>
+  <script type="module" src="login.js"></script>
+
 </body>
 </html>

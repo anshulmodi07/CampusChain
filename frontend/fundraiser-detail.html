@@ -296,19 +296,103 @@
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
     }
 
-    #ethMsg {
-      color: #059669;
+    #donationMsg {
       margin-top: 15px;
       font-weight: 600;
       text-align: center;
       padding: 12px;
-      background: #dcfce7;
       border-radius: 8px;
+      border: 1px solid transparent;
       display: none;
     }
 
-    #ethMsg.show {
+    #donationMsg.show {
       display: block;
+    }
+
+    #donationMsg.success {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+
+    #donationMsg.error {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    #donationMsg.pending {
+      background: #e0f2fe;
+      color: #0369a1;
+      border-color: #bae6fd;
+    }
+
+    /* Redesigned Donation Methods Layout */
+    .donation-methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 25px;
+      margin-bottom: 20px;
+    }
+
+    .donation-card {
+      background: #f8fafc;
+      padding: 24px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .donation-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .donation-card.crypto h3::before {
+      content: "🦊";
+    }
+
+    .donation-card.fiat h3::before {
+      content: "💳";
+    }
+    
+    .donation-card button {
+      margin-top: auto;
+    }
+
+    .donation-card .btn-pay {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .donation-card.crypto .btn-pay {
+      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    
+    .donation-card .btn-connect {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      padding: 12px 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .donation-methods {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
     }
 
     /* Comments Section */
@@ -422,16 +506,22 @@
 <body>
 
   <nav>
-    <div class="logo" onclick="window.location.href='index.html'">CampusChain</div>
+    <div class="logo">CampusChain</div>
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="fundraiser.html">All Campaigns</a></li>
-      <li><a href="login.html">Login</a></li>
+      <li><a id="loginLink" href="login.html">Login</a></li>
+      <li><a id="signupLink" href="signup.html" style="display:none;">Signup</a></li>
+      <li><a id="dashboardLink" href="#" style="display:none;">Dashboard</a></li>
+      <li><a id="logoutBtn" href="#" style="display:none;">Logout</a></li>
     </ul>
   </nav>
 
   <div class="container">
-    <h1 id="title">Loading...</h1>
+    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+      <h1 id="title" style="margin-bottom: 0;">Loading...</h1>
+      <span id="goalAchievedBadge" style="display: none; background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid #bbf7d0;">Goal Achieved! 🎉</span>
+    </div>
     <p id="description"></p>
 
     <div class="info-grid">
@@ -448,7 +538,7 @@
     <div class="raised-info">
       <p>Campaign Progress</p>
       <div class="amount">
-        <span id="raised">0</span> ETH / <span id="goal">0</span> ETH
+        <span id="raised">0</span> / <span id="goal">0</span>
       </div>
       <div class="progress-bar">
         <div id="progressFill" class="progress-fill"></div>
@@ -457,18 +547,57 @@
   </div>
 
   <div class="donation-box">
-    <h2>Support This Campaign</h2>
-    
-    <p id="walletStatus">🦊 Wallet not connected</p>
-    <button onclick="connectMetaMask()">Connect MetaMask Wallet</button>
-
-    <div class="input-group">
-      <label for="ethAmount">Contribution Amount (ETH)</label>
-      <input type="number" id="ethAmount" placeholder="Enter amount in ETH" step="0.001" min="0">
+    <div id="closedCampaignBanner" style="display: none; padding: 20px; background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 12px; color: #be123c; font-weight: 700; text-align: center; font-size: 16px; margin-bottom: 25px;">
+      🔒 This campaign has been closed by the organizer. Further donations are disabled.
     </div>
 
-    <button onclick="donateEth()">💝 Contribute Now</button>
-    <p id="ethMsg"></p>
+    <div id="paymentContainer">
+      <h2>Support This Campaign</h2>
+      
+      <div class="donation-methods">
+        <!-- Method 1: MetaMask Crypto -->
+        <div class="donation-card crypto">
+          <h3>Donate using Ethereum</h3>
+          <p id="walletStatus">🦊 Wallet not connected</p>
+          <button id="connectMetaMaskBtn" class="btn-connect" type="button">Connect MetaMask Wallet</button>
+          
+          <div class="input-group" style="margin-top: 15px;">
+            <label for="ethAmount">ETH Amount</label>
+            <input type="number" id="ethAmount" placeholder="Amount in ETH (e.g. 0.05)" step="0.0001" min="0">
+          </div>
+          
+          <button id="donateEthBtn" class="btn-pay" type="button">🦊 Pay with MetaMask</button>
+        </div>
+
+        <!-- Method 2: Razorpay Fiat -->
+        <div class="donation-card fiat">
+          <h3>Donate using Razorpay</h3>
+          <div id="razorpayTestModeBanner" style="padding: 10px; background: #fffbeb; border: 1px solid #fef08a; border-radius: 8px; color: #854d0e; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            ⚠️ Test Mode Active (Use dummy credentials)
+          </div>
+          <div style="height: 52px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #475569; background: #f1f5f9; border-radius: 8px; border: 1.5px dashed #cbd5e1; margin-bottom: 15px; font-size: 13px;">
+            💳 Cards / UPI / NetBanking
+          </div>
+          
+          <div class="input-group" style="margin-top: 15px;">
+            <label for="inrAmount">Amount (INR ₹)</label>
+            <input type="number" id="inrAmount" placeholder="Amount in INR (e.g. 500)" step="1" min="1">
+          </div>
+          
+          <button id="donateRazorpayBtn" class="btn-pay" type="button">💳 Pay with Razorpay</button>
+        </div>
+      </div>
+
+      <p id="donationMsg"></p>
+    </div>
+
+    <!-- Contributors Section -->
+    <div class="contributors-section" id="contributorsSection" style="display: none; margin-bottom: 30px;">
+      <h2>Contributors</h2>
+      <div id="contributorsList" style="background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+        <p style="color: #64748b; text-align: center; padding: 10px; margin: 0;">No contributions recorded yet.</p>
+      </div>
+    </div>
 
     <div class="comments-section">
       <h2>Leave a Message</h2>
@@ -486,7 +615,8 @@
   <!-- Web3 -->
   <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
   <script src="contractConfig.js"></script>
-  <script src="fundraiser-detail.js"></script>
+  <script type="module" src="fundraiser-detail.js?v=2"></script>
+
 
 </body>
 

@@ -1,10 +1,12 @@
-const API_BASE = "https://campuschain.online";
+import API_BASE from "./config/api.js";
+import { initNavbar } from "./navbar.js";
+
 
 let web3;
 let contract;
 let userAccount;
 
-// ---------------- PROTECT NGO ROUTE ----------------
+// ---------------- PROTECT NGO ROUTE & INIT NAVBAR ----------------
 window.onload = () => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -12,18 +14,24 @@ window.onload = () => {
   if (!token || role !== "ngo") {
     alert("Access denied! Login as NGO.");
     window.location.href = "login.html";
+    return;
   }
-};
 
-// ---------------- LOGOUT ----------------
-document.getElementById("logoutBtn").onclick = () => {
-  localStorage.clear();
-  window.location.href = "index.html";
+  initNavbar();
+
+  // Check MetaMask install status
+  const connectWalletBtn = document.getElementById("connectWalletBtn");
+  if (connectWalletBtn && !window.ethereum) {
+    connectWalletBtn.innerText = "Install MetaMask 🦊";
+  }
 };
 
 // ---------------- CONNECT WALLET ----------------
 async function connectWallet() {
-  if (!window.ethereum) return alert("Please install MetaMask");
+  if (!window.ethereum) {
+    window.open("https://metamask.io/download/", "_blank");
+    return;
+  }
 
   try {
     await ethereum.request({ method: "eth_requestAccounts" });
@@ -40,7 +48,7 @@ async function connectWallet() {
   }
 }
 
-document.getElementById("connectWalletBtn").onclick = connectWallet;
+document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
 
 // Reload on account change
 if (window.ethereum) {
