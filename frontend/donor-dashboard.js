@@ -143,7 +143,7 @@ async function loadDonations() {
 
       // Render Verify Proof action button if anchor_tx_hash is present
       const verifyProofBtn = d.anchor_tx_hash
-        ? `<button class="btn btn-secondary verify-proof-btn" data-hash="${d.anchor_tx_hash}" style="width: auto; padding: 8px 16px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; transition: all 0.2s; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; display: inline-flex; align-items: center; gap: 5px;">🔒 Verify Proof</button>`
+        ? `<button class="btn btn-secondary verify-proof-btn" data-id="${d.donation_id}" data-hash="${d.anchor_tx_hash}" style="width: auto; padding: 8px 16px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; transition: all 0.2s; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; display: inline-flex; align-items: center; gap: 5px;">🔒 Verify Proof</button>`
         : `<span style="font-size: 13px; color: #64748b; font-style: italic;">Proof anchoring...</span>`;
 
       card.innerHTML = `
@@ -177,11 +177,38 @@ async function loadDonations() {
 
     // Wire verify proof buttons
     document.querySelectorAll(".verify-proof-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", async () => {
         const hash = btn.getAttribute("data-hash");
+        const donationId = btn.getAttribute("data-id");
+        const token = localStorage.getItem("token");
+
+        const statusEl = document.getElementById("proofStatus");
+        statusEl.textContent = "Verifying cryptographic proof on Sepolia...";
+        statusEl.style.color = "#64748b";
+
         document.getElementById("proofTxHash").textContent = hash;
         document.getElementById("proofEtherscanLink").href = `https://sepolia.etherscan.io/tx/${hash}`;
         document.getElementById("proofModal").style.display = "flex";
+
+        try {
+          const res = await fetch(`${API_BASE}/api/donation/${donationId}/verify`, {
+            headers: {
+              "Authorization": "Bearer " + token
+            }
+          });
+          const data = await res.json();
+          if (res.ok && data.verified) {
+            statusEl.textContent = "Anchored & Verified ✓";
+            statusEl.style.color = "#15803d";
+          } else {
+            statusEl.textContent = "Tampered / Unverified ❌";
+            statusEl.style.color = "#b91c1c";
+          }
+        } catch (err) {
+          console.error("Verification failed:", err);
+          statusEl.textContent = "Verification Failed (Network Error) ⚠️";
+          statusEl.style.color = "#d97706";
+        }
       });
     });
 
