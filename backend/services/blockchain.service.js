@@ -119,7 +119,16 @@ export const generateDonationHash = ({
   // To keep ABI encoding simple, we encode amount as uint256 using wei-like scaling if needed.
   // Here we treat `amount` as a base-unit integer if it's already integral-like.
   // If it's a float, we encode it as string-hash to avoid rounding.
-  const amountStr = String(amount);
+  // Normalize the amount string to ensure consistent hashing between unpadded input (anchoring)
+  // and trailing-zero padded decimal values retrieved from the SQL database.
+  let amountStr = String(amount).trim();
+  if (amountStr.includes(".")) {
+    amountStr = amountStr.replace(/0+$/, "");
+    if (amountStr.endsWith(".")) {
+      amountStr = amountStr.substring(0, amountStr.length - 1);
+    }
+  }
+
   let amountEncoded;
   if (/^\d+$/.test(amountStr)) {
     amountEncoded = toSolidityUint256(amountStr);
